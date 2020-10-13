@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/userScreens/cart.dart';
 
-
 class ItemDetails extends StatefulWidget {
   String itemName;
   String itemImage;
@@ -22,6 +21,7 @@ class ItemDetails extends StatefulWidget {
 }
 
 class _ItemDetailsState extends State<ItemDetails> {
+  int number;
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -310,7 +310,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           height: 10.0,
                         ),
                         new Text(
-                          "Sizes",
+                          "Quantity",
                           style: new TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.w700),
                         ),
@@ -321,11 +321,21 @@ class _ItemDetailsState extends State<ItemDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             new CircleAvatar(
-                              child: new Icon(Icons.remove),
+                              child: new IconButton(
+                                icon: Icon(Icons.remove),
+                                onPressed: () {
+                                  number--;
+                                },
+                              ),
                             ),
-                            new Text("0"),
+                            new Text(number.toString()),
                             new CircleAvatar(
-                              child: new Icon(Icons.add),
+                              child: new IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  number++;
+                                },
+                              ),
                             ),
                           ],
                         ),

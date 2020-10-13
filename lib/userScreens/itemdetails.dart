@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/userScreens/cart.dart';
+import 'package:intl/intl.dart';
 
 class ItemDetail extends StatefulWidget {
   String itemName;
   String itemImage;
   String itemSubName;
-  double itemPrice;
+  int itemPrice;
   double itemRating;
 
   ItemDetail(
@@ -21,6 +22,8 @@ class ItemDetail extends StatefulWidget {
 }
 
 class _ItemDetailState extends State<ItemDetail> {
+  int number = 0;
+  final oCcy = new NumberFormat("#,##0", "en_US");
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -106,7 +109,7 @@ class _ItemDetailState extends State<ItemDetail> {
                               ],
                             ),
                             new Text(
-                              "N${widget.itemPrice}",
+                              "${oCcy.format(widget.itemPrice)}đ",
                               style: new TextStyle(
                                   fontSize: 20.0,
                                   color: Colors.red[500],
@@ -243,7 +246,7 @@ class _ItemDetailState extends State<ItemDetail> {
                           height: 10.0,
                         ),
                         new Text(
-                          "Sizes",
+                          "Quantity",
                           style: new TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.w700),
                         ),
@@ -254,11 +257,30 @@ class _ItemDetailState extends State<ItemDetail> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             new CircleAvatar(
-                              child: new Icon(Icons.remove),
+                              child: new IconButton(
+                                icon: Icon(Icons.remove),
+                                onPressed: () {
+                                  setState(() {
+                                    number--;
+                                    if (number <= 0) {
+                                      setState(() {
+                                        number = 0;
+                                      });
+                                    }
+                                  });
+                                },
+                              ),
                             ),
-                            new Text("0"),
-                            new CircleAvatar(
-                              child: new Icon(Icons.add),
+                            Text(number.toString()),
+                            CircleAvatar(
+                              child: new IconButton(
+                                icon: Icon(Icons.add),
+                                onPressed: () {
+                                  setState(() {
+                                    number++;
+                                  });
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -288,7 +310,7 @@ class _ItemDetailState extends State<ItemDetail> {
             radius: 10.0,
             backgroundColor: Colors.red,
             child: new Text(
-              "0",
+              "8",
               style: new TextStyle(color: Colors.white, fontSize: 12.0),
             ),
           )

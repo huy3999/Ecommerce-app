@@ -14,7 +14,7 @@ import 'package:doan_cnpm/userScreens/itemdetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'favorites.dart';
 import 'messages.dart';
-import 'cart.dart';
+import 'my_cart.dart';
 import 'notifications.dart';
 import 'history.dart';
 import 'profile.dart';
@@ -22,6 +22,8 @@ import 'delivery.dart';
 import 'aboutUs.dart';
 import 'login.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
+
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -34,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String acctEmail = "";
   String acctPhotoURL = "";
   bool isLoggedIn;
+  final oCcy = new NumberFormat("#,##0", "en_US");
   // AppMethods appMethods = new FirebaseMethods();
 
   @override
@@ -128,7 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             )));
                   },
                   child: new Card(
-                    child: Stack(
+                    // child: Column(
+                       
+                    //   children: [
+                    child:  Stack(
                       alignment: FractionalOffset.topLeft,
                       children: <Widget>[
                         new Stack(
@@ -142,27 +148,37 @@ class _MyHomePageState extends State<MyHomePage> {
                                           storeItems[index].itemImage))),
                             ),
                             new Container(
-                              height: 35.0,
+                              height: 55.0,
                               color: Colors.black.withAlpha(100),
                               child: new Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: new Row(
+                                child: new Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    new Text(
-                                      "${storeItems[index].itemName.substring(0, 8)}...",
+                                    // Row(
+                                    //   children: [
+                                        Text(
+                                      "${storeItems[index].itemName}",
+                                      overflow: TextOverflow.fade,
+                                      maxLines: 1,
+                                      softWrap: false,
                                       style: new TextStyle(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 16.0,
                                           color: Colors.white),
                                     ),
-                                    new Text(
-                                      "N${storeItems[index].itemPrice}",
+                                    // ],),
+                                    Row(
+                                      children: [
+                                        new Text(
+                                      "${oCcy.format(storeItems[index].itemPrice)}đ",
                                       style: new TextStyle(
                                           color: Colors.red[500],
                                           fontWeight: FontWeight.w700),
                                     ),
+                                    ],) 
+                                    
                                   ],
                                 ),
                               ),
@@ -207,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         )
                       ],
                     ),
+                    
                   ),
                 );
               },
@@ -220,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
           new FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(new CupertinoPageRoute(
-                  builder: (BuildContext context) => new GirliesCart()));
+                  builder: (BuildContext context) => new ShoppingCartPage()));
             },
             child: new Icon(Icons.shopping_cart),
           ),
