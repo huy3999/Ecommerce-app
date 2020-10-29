@@ -1,11 +1,13 @@
 import 'dart:async';
 
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doan_cnpm/model/product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:doan_cnpm/adminScreens/admin_home.dart';
 import 'package:doan_cnpm/tools/Store.dart';
 import 'package:doan_cnpm/tools/app_data.dart';
+import 'package:doan_cnpm/bloc/provider.dart';
 import 'package:doan_cnpm/tools/app_methods.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:doan_cnpm/tools/firebase_methods.dart';
@@ -23,7 +25,6 @@ import 'aboutUs.dart';
 import 'login.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
-
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -59,12 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
+    //this.context = context;
+    final productsBloc = Provider.productsBloc(context);
+    //final productsBloc = Provider.of(context).productsBloc;
+    productsBloc.loadProducts();
     return new Scaffold(
       appBar: new AppBar(
         title: GestureDetector(
-          onLongPress: openAdmin,
-          child: new Text("Girlies"),
+          child: new Text("E-commerce"),
         ),
         centerTitle: true,
         actions: <Widget>[
@@ -103,134 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: new Center(
-        child: new Column(
-          children: <Widget>[
-            new Flexible(
-                child: new GridView.builder(
-              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              itemCount: storeItems.length,
-              itemBuilder: (BuildContext context, int index) {
-                return new GestureDetector(
-                  onTap: () {
-                    /* Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (context) => new ItemDetails(
-                              itemImage: storeItems[index].itemImage,
-                              itemName: storeItems[index].itemName,
-                              itemPrice: storeItems[index].itemPrice,
-                              itemRating: storeItems[index].itemRating,
-                            )));*/
-
-                    Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (context) => new ItemDetail(
-                              itemImage: storeItems[index].itemImage,
-                              itemName: storeItems[index].itemName,
-                              itemPrice: storeItems[index].itemPrice,
-                              itemRating: storeItems[index].itemRating,
-                            )));
-                  },
-                  child: new Card(
-                    // child: Column(
-                       
-                    //   children: [
-                    child:  Stack(
-                      alignment: FractionalOffset.topLeft,
-                      children: <Widget>[
-                        new Stack(
-                          alignment: FractionalOffset.bottomCenter,
-                          children: <Widget>[
-                            new Container(
-                              decoration: new BoxDecoration(
-                                  image: new DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: new NetworkImage(
-                                          storeItems[index].itemImage))),
-                            ),
-                            new Container(
-                              height: 55.0,
-                              color: Colors.black.withAlpha(100),
-                              child: new Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: new Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    // Row(
-                                    //   children: [
-                                        Text(
-                                      "${storeItems[index].itemName}",
-                                      overflow: TextOverflow.fade,
-                                      maxLines: 1,
-                                      softWrap: false,
-                                      style: new TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.0,
-                                          color: Colors.white),
-                                    ),
-                                    // ],),
-                                    Row(
-                                      children: [
-                                        new Text(
-                                      "${oCcy.format(storeItems[index].itemPrice)}đ",
-                                      style: new TextStyle(
-                                          color: Colors.red[500],
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    ],) 
-                                    
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Container(
-                              height: 30.0,
-                              width: 60.0,
-                              decoration: new BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: new BorderRadius.only(
-                                    topRight: new Radius.circular(5.0),
-                                    bottomRight: new Radius.circular(5.0),
-                                  )),
-                              child: new Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  new Icon(
-                                    Icons.star,
-                                    color: Colors.blue,
-                                    size: 20.0,
-                                  ),
-                                  new Text(
-                                    "${storeItems[index].itemRating}",
-                                    style: new TextStyle(color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                            new IconButton(
-                                icon: Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.blue,
-                                ),
-                                onPressed: () {})
-                          ],
-                        )
-                      ],
-                    ),
-                    
-                  ),
-                );
-              },
-            ))
-          ],
-        ),
-      ),
+      body: _showProductList(productsBloc),
       floatingActionButton: new Stack(
         alignment: Alignment.topLeft,
         children: <Widget>[
@@ -364,8 +240,155 @@ class _MyHomePageState extends State<MyHomePage> {
   //   if (response == true) getCurrentUser();
   // }
 
-  openAdmin() {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new AdminHome()));
-  }
+}
+
+Widget _showProductList(ProductsBloc productsBloc) {
+  final oCcy = new NumberFormat("#,##0", "en_US");
+  return StreamBuilder(
+    stream: productsBloc.productsStream,
+    builder:
+        (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
+      if (snapshot.hasData) {
+        final products = snapshot.data;
+        return new Center(
+          child: new Column(
+            children: <Widget>[
+              new Flexible(
+                  child: new GridView.builder(
+                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return new GestureDetector(
+                    onTap: () {
+                      /* Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (context) => new ItemDetails(
+                            itemImage: storeItems[index].itemImage,
+                            itemName: storeItems[index].itemName,
+                            itemPrice: storeItems[index].itemPrice,
+                            itemRating: storeItems[index].itemRating,
+                          )));*/
+
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (context) => new ItemDetail(
+                                itemImage: products[index].image,
+                                itemName: products[index].name,
+                                itemPrice: products[index].price,
+                                //itemRating: storeItems[index].itemRating,
+                                itemDescription: products[index].description,
+                              )));
+                    },
+                    child: new Card(
+                      // child: Column(
+
+                      //   children: [
+                      child: Stack(
+                        alignment: FractionalOffset.topLeft,
+                        children: <Widget>[
+                          new Stack(
+                            alignment: FractionalOffset.bottomCenter,
+                            children: <Widget>[
+                              new Container(
+                                decoration: new BoxDecoration(
+                                    image: new DecorationImage(
+                                        fit: BoxFit.fitWidth,
+                                        image: new NetworkImage(
+                                            products[index].image[0]))),
+                              ),
+                              new Container(
+                                height: 55.0,
+                                color: Colors.black.withAlpha(100),
+                                child: new Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: new Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      // Row(
+                                      //   children: [
+                                      Text(
+                                        "${products[index].name}",
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                        style: new TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16.0,
+                                            color: Colors.white),
+                                      ),
+                                      // ],),
+                                      Row(
+                                        children: [
+                                          products[index].price!=null ?
+                                            Text(
+                                            "${oCcy.format(products[index].price)}đ" ?? 'Liên hệ',
+                                            style: new TextStyle(
+                                                color: Colors.red[500],
+                                                fontWeight: FontWeight.w700),
+                                          )
+                                            : Text(
+                                            'Liên hệ',
+                                            style: new TextStyle(
+                                                color: Colors.red[500],
+                                                fontWeight: FontWeight.w700))
+
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Container(
+                                height: 30.0,
+                                width: 60.0,
+                                decoration: new BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: new BorderRadius.only(
+                                      topRight: new Radius.circular(5.0),
+                                      bottomRight: new Radius.circular(5.0),
+                                    )),
+                                child: new Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    new Icon(
+                                      Icons.star,
+                                      color: Colors.blue,
+                                      size: 20.0,
+                                    ),
+                                    new Text(
+                                      "4",
+                                      //"${products[index].rating}",
+                                      style: new TextStyle(color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              new IconButton(
+                                  icon: Icon(
+                                    Icons.favorite_border,
+                                    color: Colors.blue,
+                                  ),
+                                  onPressed: () {})
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ))
+            ],
+          ),
+        );
+      } else {
+        return Center(child: CircularProgressIndicator());
+      }
+    },
+  );
 }

@@ -5,17 +5,19 @@ import 'package:intl/intl.dart';
 
 class ItemDetail extends StatefulWidget {
   String itemName;
-  String itemImage;
+  List<String> itemImage;
   String itemSubName;
   int itemPrice;
   double itemRating;
+  String itemDescription;
 
   ItemDetail(
       {this.itemName,
       this.itemImage,
       this.itemRating,
       this.itemPrice,
-      this.itemSubName});
+      this.itemSubName,
+      this.itemDescription});
 
   @override
   _ItemDetailState createState() => _ItemDetailState();
@@ -40,7 +42,7 @@ class _ItemDetailState extends State<ItemDetail> {
             height: 300.0,
             decoration: new BoxDecoration(
                 image: new DecorationImage(
-                    image: new NetworkImage(widget.itemImage),
+                    image: new NetworkImage(widget.itemImage[0]),
                     fit: BoxFit.fitHeight),
                 borderRadius: new BorderRadius.only(
                   bottomRight: new Radius.circular(120.0),
@@ -108,13 +110,21 @@ class _ItemDetailState extends State<ItemDetail> {
                                 )
                               ],
                             ),
-                            new Text(
-                              "${oCcy.format(widget.itemPrice)}đ",
-                              style: new TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.red[500],
-                                  fontWeight: FontWeight.w700),
-                            ),
+                             Row(
+                            children: [
+                            widget.itemPrice!=null ?
+                                            Text(
+                                            "${oCcy.format(widget.itemPrice)}đ",
+                                            style: new TextStyle(
+                                                color: Colors.red[500],
+                                                fontWeight: FontWeight.w700),
+                                          )
+                                            : Text(
+                                            'Liên hệ',
+                                            style: new TextStyle(
+                                                color: Colors.red[500],
+                                                fontWeight: FontWeight.w700))
+                                        ]),
                           ],
                         ),
                         new SizedBox(
@@ -130,7 +140,7 @@ class _ItemDetailState extends State<ItemDetail> {
                     height: 150.0,
                     child: new ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: 5,
+                        itemCount: widget.itemImage.length,
                         itemBuilder: (context, index) {
                           return new Stack(
                             alignment: Alignment.center,
@@ -140,7 +150,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                     new EdgeInsets.only(left: 5.0, right: 5.0),
                                 height: 140.0,
                                 width: 100.0,
-                                child: new Image.network(widget.itemImage),
+                                child: new Image.network(widget.itemImage[index]),
                               ),
                               new Container(
                                 margin:
@@ -174,7 +184,7 @@ class _ItemDetailState extends State<ItemDetail> {
                           height: 10.0,
                         ),
                         new Text(
-                          "My item full information",
+                          widget.itemDescription,
                           style: new TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.w400),
                         ),

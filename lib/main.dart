@@ -1,3 +1,4 @@
+import 'package:doan_cnpm/bloc/provider.dart';
 import 'package:flutter/material.dart';
 import 'userScreens/myHomePage.dart';
 
@@ -7,12 +8,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return Provider(
+        child: MaterialApp(
       title: 'Flutter Girlies',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: new MyHomePage(),
-    );
+    ));
   }
 }
