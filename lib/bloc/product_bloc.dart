@@ -17,6 +17,11 @@ class ProductsBloc {
     _productsController.sink.add(products);
   }
 
+  void addProductToCart(ProductModel product) async {
+    final products = await _productsService.addToCart(product);
+    _loadingController.sink.add(products);
+  }
+
   // void addProducts(ProductModel product) async {
   //   _loadingController.sink.add(true);
   //   await _productsService.addProduct(product);

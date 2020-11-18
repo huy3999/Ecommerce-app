@@ -5,7 +5,7 @@ import 'dart:convert';
 // String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  ProductModel(
+  ProductModel( 
       {this.id,
       this.name,
       this.price,
@@ -13,7 +13,8 @@ class ProductModel {
       this.id_category,
       this.image,
       this.description,
-      this.create_at});
+      this.create_at,
+      this.isChecked});
 
   String id;
   String name;
@@ -23,6 +24,7 @@ class ProductModel {
   List<String> image;
   String description;
   String create_at;
+  bool isChecked;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
       id: json["_id"],
@@ -32,40 +34,32 @@ class ProductModel {
       id_category: json["id_category"],
       image: json["image"].cast<String>(),
       description: json["description"],
-      create_at: json["create_at"]);
+      create_at: json["create_at"],
+      isChecked: false);
 
-  // factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-  //     json["_id"] as String,
-  //     json["name"]as String,
-  //     json["price"] as int,
-  //     json["quantity"] as int,
-  //     json["id_category"] as int,
-  //     json["image"]as String,
-  //     json["description"]as String,
-  //     json["create_at"]as String);
-// factory ProductModel.fromMap(Map<String, dynamic> json) {
-//       return ProductModel(
-//       json["_id"],
-//       json["name"],
-//       int.parse(json["price"]),
-//       int.parse(json["quantity"]),
-//       int.parse(json["id_category"]),
-//       json["image"],
-//       json["description"],
-//       json["create_at"]
-//       );
-
-  //}
-  Map<String, dynamic> toJson() => {
+  static Map<String, dynamic> toJson(ProductModel productModel) => {
         //"id"        : id,
-        "name": name,
-        "price": price,
-        "quantity": quantity,
-        "id_category": id_category,
-        "image": image,
-        "description": description,
-        "create_at": create_at
+        "name": productModel.name,
+        "price": productModel.price,
+        "quantity": productModel.quantity,
+        "id_category": productModel.id_category,
+        "image": productModel.image,
+        "description": productModel.description,
+        "create_at": productModel.create_at,
+        "isChecked": productModel.isChecked
       };
+
+  static String encodeProducts(List<ProductModel> products) => json.encode(
+        products
+            .map<Map<String, dynamic>>(
+                (product) => ProductModel.toJson(product))
+            .toList(),
+      );
+
+  static List<ProductModel> decodeProducts(String products) =>
+      (json.decode(products) as List<dynamic>)
+          .map<ProductModel>((item) => ProductModel.fromJson(item))
+          .toList();
 }
 
 class Brand {

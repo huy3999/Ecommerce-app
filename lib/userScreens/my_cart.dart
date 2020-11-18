@@ -1,5 +1,6 @@
+import 'package:doan_cnpm/model/product.dart';
+import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:flutter/material.dart';
-import 'package:doan_cnpm/tools/Store.dart';
 import 'package:doan_cnpm/tools/app_theme.dart';
 import 'package:intl/intl.dart';
 //import 'package:flutter/scheduler.dart' show timeDilation;
@@ -11,12 +12,30 @@ class ShoppingCartPage extends StatefulWidget {
 }
 
 class _ShoppingCartPage extends State<ShoppingCartPage> {
-  Widget _cartItems() {
-    return Column(children: cartList.map((x) => _item(x)).toList());
-  }
-
+  List<ProductModel> cartList;
   final oCcy = new NumberFormat("#,##0", "en_US");
-  Widget _item(Store model) {
+
+  Widget _cartItems() {
+    return FutureBuilder<List<ProductModel>>(
+        future: getListDataLocally(
+            key: 'cartList'), // a previously-obtained Future<String> or null
+        builder:
+            (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
+          if (snapshot.hasData) {
+            cartList = snapshot.data;
+            return Column(children: cartList.map((x) => _item(x)).toList());
+          } else {
+            return Center(
+              child: Text("No item"),
+            );
+          }
+        });
+  }
+  // Widget _cartItems() {
+  //   return Column(children: cartList.map((x) => _item(x)).toList());
+  // }
+
+  Widget _item(ProductModel model) {
     return Container(
         //padding: EdgeInsets.only(top: 10),
         height: 150,
@@ -38,7 +57,7 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                             decoration: new BoxDecoration(
                                 image: new DecorationImage(
                                     fit: BoxFit.fitWidth,
-                                    image: new NetworkImage(model.itemImage))),
+                                    image: new NetworkImage(model.image[0]))),
                           ),
                         ),
                       ],
@@ -51,16 +70,15 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                   onChanged: (bool value) {
                     setState(() {
                       model.isChecked = value;
-                      print(
-                          "name: ${model.itemName} value: ${model.isChecked}");
+                      print("name: ${model.name} value: ${model.isChecked}");
                     });
                   },
                   title: Text(
-                    model.itemName,
+                    model.name,
                   ),
                   contentPadding: EdgeInsets.only(top: 10),
                   subtitle: new Text(
-                    "${oCcy.format(model.itemPrice)}đ",
+                    "${oCcy.format(model.price)}đ",
                     style: new TextStyle(
                         color: Colors.red[500], fontWeight: FontWeight.w700),
                   ),
@@ -156,18 +174,22 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
   }
 
   double getPrice() {
-    double price = 0;
-    cartList.forEach((x) {
-      price += (x.itemPrice) * x.quantity;
-    });
-    return price;
+    double itemPrice = 0;
+    if (cartList != null) {
+      cartList.forEach((x) {
+        itemPrice += (x.price) * x.quantity;
+      });
+    }
+    return itemPrice;
   }
 
   int itemCount() {
     int count = 0;
-    cartList.forEach((x) {
-      count += x.quantity;
-    });
+    if (cartList != null) {
+      cartList.forEach((x) {
+        count += x.quantity;
+      });
+    }
     return count;
   }
 

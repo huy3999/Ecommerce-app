@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:doan_cnpm/model/product.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/tools/progressdialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -390,6 +391,20 @@ getDataLocally({String key}) async {
   Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
   final SharedPreferences localData = await saveLocal;
   return localData.get(key);
+}
+
+Future<List<ProductModel>> getListDataLocally({String key}) async {
+  // Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
+  // final SharedPreferences localData = await saveLocal;
+  // print(localData.get('cartList'));
+  // if (localData == null) {
+  //   return null;
+  // }
+  String map = await getStringDataLocally(key: key);
+  print(map);
+  List<ProductModel> products = ProductModel.decodeProducts(map);
+  print(products);
+  return products;
 }
 
 getStringDataLocally({String key}) async {

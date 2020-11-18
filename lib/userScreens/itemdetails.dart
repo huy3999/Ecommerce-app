@@ -1,7 +1,12 @@
+import 'package:doan_cnpm/bloc/provider.dart';
+import 'package:doan_cnpm/model/product.dart';
+import 'package:doan_cnpm/userScreens/my_cart.dart';
+import 'package:doan_cnpm/widgets/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/userScreens/cart.dart';
 import 'package:intl/intl.dart';
+//import 'package:photo_view/photo_view.dart';
 
 class ItemDetail extends StatefulWidget {
   String itemName;
@@ -28,6 +33,7 @@ class _ItemDetailState extends State<ItemDetail> {
   final oCcy = new NumberFormat("#,##0", "en_US");
   @override
   Widget build(BuildContext context) {
+    final productsBloc = Provider.productsBloc(context);
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: new AppBar(
@@ -110,21 +116,19 @@ class _ItemDetailState extends State<ItemDetail> {
                                 )
                               ],
                             ),
-                             Row(
-                            children: [
-                            widget.itemPrice!=null ?
-                                            Text(
-                                            "${oCcy.format(widget.itemPrice)}đ",
-                                            style: new TextStyle(
-                                                color: Colors.red[500],
-                                                fontWeight: FontWeight.w700),
-                                          )
-                                            : Text(
-                                            'Liên hệ',
-                                            style: new TextStyle(
-                                                color: Colors.red[500],
-                                                fontWeight: FontWeight.w700))
-                                        ]),
+                            Row(children: [
+                              widget.itemPrice != null
+                                  ? Text(
+                                      "${oCcy.format(widget.itemPrice)}đ",
+                                      style: new TextStyle(
+                                          color: Colors.red[500],
+                                          fontWeight: FontWeight.w700),
+                                    )
+                                  : Text('Liên hệ',
+                                      style: new TextStyle(
+                                          color: Colors.red[500],
+                                          fontWeight: FontWeight.w700))
+                            ]),
                           ],
                         ),
                         new SizedBox(
@@ -150,7 +154,8 @@ class _ItemDetailState extends State<ItemDetail> {
                                     new EdgeInsets.only(left: 5.0, right: 5.0),
                                 height: 140.0,
                                 width: 100.0,
-                                child: new Image.network(widget.itemImage[index]),
+                                child:
+                                    new Image.network(widget.itemImage[index]),
                               ),
                               new Container(
                                 margin:
@@ -183,10 +188,11 @@ class _ItemDetailState extends State<ItemDetail> {
                         new SizedBox(
                           height: 10.0,
                         ),
-                        new Text(
+                        new ExpandableText(
                           widget.itemDescription,
-                          style: new TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.w400),
+                          trimLines: 5,
+                          // style: new TextStyle(
+                          //     fontSize: 14.0, fontWeight: FontWeight.w400),
                         ),
                         new SizedBox(
                           height: 10.0,
@@ -312,7 +318,7 @@ class _ItemDetailState extends State<ItemDetail> {
           new FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(new CupertinoPageRoute(
-                  builder: (BuildContext context) => new GirliesCart()));
+                  builder: (BuildContext context) => new ShoppingCartPage()));
             },
             child: new Icon(Icons.shopping_cart),
           ),
@@ -347,13 +353,23 @@ class _ItemDetailState extends State<ItemDetail> {
                       color: Colors.white, fontWeight: FontWeight.w700),
                 ),
               ),
-              new Container(
-                width: (screenSize.width - 20) / 2,
-                child: new Text(
-                  "ORDER NOW",
-                  textAlign: TextAlign.center,
-                  style: new TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w700),
+              GestureDetector(
+                onTap: () {
+                  productsBloc.addProductToCart(new ProductModel(
+                      name: widget.itemName,
+                      price: widget.itemPrice,
+                      image: widget.itemImage,
+                      quantity: 1,
+                      isChecked: true));
+                },
+                child: new Container(
+                  width: (screenSize.width - 20) / 2,
+                  child: new Text(
+                    "ORDER NOW",
+                    textAlign: TextAlign.center,
+                    style: new TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
             ],

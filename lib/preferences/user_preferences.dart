@@ -1,19 +1,19 @@
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
-class UserPreferences {
-  static final UserPreferences _instance = new UserPreferences._internal();
+// class UserPreferences {
+//   static final UserPreferences _instance = new UserPreferences._internal();
 
-  factory UserPreferences() {
-    return _instance;
-  }
+//   factory UserPreferences() {
+//     return _instance;
+//   }
 
-  UserPreferences._internal();
+//   UserPreferences._internal();
 
-  SharedPreferences _prefs;
+//   SharedPreferences _prefs;
 
-  initPrefs() async {
-    this._prefs = await SharedPreferences.getInstance();
-  }
+//   initPrefs() async {
+//     this._prefs = await SharedPreferences.getInstance();
+//   }
 
 //   get token {
 //     return _prefs.getString('token') ?? '';
@@ -30,4 +30,4 @@ class UserPreferences {
 //   set lastPage(String value) {
 //     _prefs.setString('lastPage', value);
 //   }
-}
+//}

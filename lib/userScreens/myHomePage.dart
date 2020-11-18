@@ -13,7 +13,7 @@ import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:doan_cnpm/tools/firebase_methods.dart';
 import 'package:doan_cnpm/userScreens/item_details.dart';
 import 'package:doan_cnpm/userScreens/itemdetails.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'favorites.dart';
 import 'messages.dart';
 import 'my_cart.dart';
@@ -48,10 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future getCurrentUser() async {
-    acctName = await getStringDataLocally(key: acctFullName);
-    acctEmail = await getStringDataLocally(key: userEmail);
-    acctPhotoURL = await getStringDataLocally(key: photoURL);
-    isLoggedIn = await getBoolDataLocally(key: loggedIN);
+    // acctName = await getStringDataLocally(key: acctFullName);
+    // acctEmail = await getStringDataLocally(key: userEmail);
+    // acctPhotoURL = await getStringDataLocally(key: photoURL);
+    // isLoggedIn = await getBoolDataLocally(key: loggedIN);
     //print(await getStringDataLocally(key: userEmail));
     acctName == null ? acctName = "Guest User" : acctName;
     acctEmail == null ? acctEmail = "guestUser@email.com" : acctEmail;
@@ -269,7 +269,7 @@ Widget _showProductList(ProductsBloc productsBloc) {
                             itemRating: storeItems[index].itemRating,
                           )));*/
 
-                      Navigator.of(context).push(new MaterialPageRoute(
+                      Navigator.of(context).push(new CupertinoPageRoute(
                           builder: (context) => new ItemDetail(
                                 itemImage: products[index].image,
                                 itemName: products[index].name,

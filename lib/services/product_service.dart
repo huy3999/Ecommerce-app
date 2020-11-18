@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:doan_cnpm/model/product.dart';
@@ -7,39 +8,32 @@ import 'dart:io';
 
 class ProductService {
   final String _baseUrl = 'http://dacnpm-test.herokuapp.com';
-  final _prefs = new UserPreferences();
+  //final _prefs = new UserPreferences();
 
   Future<List<ProductModel>> getAllProducts() async {
     final url = '$_baseUrl/products/';
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      //return parseProducts(response.body);
-
-      if (response.statusCode == 200) {
-        //final Map<String, dynamic> decodedData = json.decode(response.body);
-        List<ProductModel> products = new List<ProductModel>();
-
-        Iterable l = json.decode(response.body);
-        //List<ProductModel> products = List<ProductModel>.from(l).map((Map model)=> ProductModel.fromJson(model)).toList();
-        // products=(json.decode(response.body) as List).map((i) =>
-        //       ProductModel.fromJson(i)).toList();
-        products = l.map((i)=>ProductModel.fromJson(i)).toList(); 
-        // decodedData.forEach((id, prod) {
-        //   final prodTemp = ProductModel.fromJson(prod);
-        //   prodTemp.id = id;
-        //   products.add(prodTemp);
-
-        //print(products);
-        //print(products[0].name);
-          return products;
-        };
-      
+      List<ProductModel> products = new List<ProductModel>();
+      Iterable l = json.decode(response.body);
+      products = l.map((i) => ProductModel.fromJson(i)).toList();
+      //print(products);
+      //print(products[0].name);
+      return products;
     } else {
       throw Exception('Unable to fetch products from the REST API');
-      
     }
-    // var decodedData;
-    // /// Firebase REST  API returns a Map<String, Map<String, dynamic>>
+  }
+
+  Future<bool> addToCart(ProductModel product) async {
+    List<ProductModel> cartList = await getListDataLocally(key: 'cartList');
+    if (cartList == null) cartList = new List<ProductModel>();
+    cartList.add(product);
+    print(cartList[0]);
+    var map = ProductModel.encodeProducts(cartList);
+    //print("add to cart"+map);
+    writeDataLocally(key: 'cartList', value: map);
+    return true;
   }
 
   // List<ProductModel> parseProducts(String responseBody) {
