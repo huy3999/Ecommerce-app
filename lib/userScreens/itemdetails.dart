@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 //import 'package:photo_view/photo_view.dart';
 
 class ItemDetail extends StatefulWidget {
+  String itemId;
   String itemName;
   List<String> itemImage;
   String itemSubName;
@@ -17,7 +18,8 @@ class ItemDetail extends StatefulWidget {
   String itemDescription;
 
   ItemDetail(
-      {this.itemName,
+      {this.itemId,
+      this.itemName,
       this.itemImage,
       this.itemRating,
       this.itemPrice,
@@ -356,6 +358,7 @@ class _ItemDetailState extends State<ItemDetail> {
               GestureDetector(
                 onTap: () {
                   productsBloc.addProductToCart(new ProductModel(
+                      id: widget.itemId,
                       name: widget.itemName,
                       price: widget.itemPrice,
                       image: widget.itemImage,

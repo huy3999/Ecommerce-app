@@ -271,6 +271,7 @@ Widget _showProductList(ProductsBloc productsBloc) {
 
                       Navigator.of(context).push(new CupertinoPageRoute(
                           builder: (context) => new ItemDetail(
+                                itemId: products[index].id,
                                 itemImage: products[index].image,
                                 itemName: products[index].name,
                                 itemPrice: products[index].price,

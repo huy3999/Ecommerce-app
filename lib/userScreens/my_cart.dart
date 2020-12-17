@@ -1,5 +1,6 @@
+import 'package:doan_cnpm/model/db_helper.dart';
 import 'package:doan_cnpm/model/product.dart';
-import 'package:doan_cnpm/tools/app_tools.dart';
+import 'package:doan_cnpm/services/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/tools/app_theme.dart';
 import 'package:intl/intl.dart';
@@ -14,17 +15,21 @@ class ShoppingCartPage extends StatefulWidget {
 class _ShoppingCartPage extends State<ShoppingCartPage> {
   List<ProductModel> cartList;
   final oCcy = new NumberFormat("#,##0", "en_US");
-
+  final dbHelper = DatabaseHelper.instance;
+  ProductService productService = new ProductService();
   Widget _cartItems() {
     return FutureBuilder<List<ProductModel>>(
-        future: getListDataLocally(
-            key: 'cartList'), // a previously-obtained Future<String> or null
+        future: productService
+            .getCartList(), // a previously-obtained Future<String> or null
         builder:
             (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
           if (snapshot.hasData) {
             cartList = snapshot.data;
+            print('cartlist');
+            print(cartList[0].id);
             return Column(children: cartList.map((x) => _item(x)).toList());
           } else {
+            print('no item');
             return Center(
               child: Text("No item"),
             );
@@ -96,10 +101,11 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                     icon: Icon(Icons.remove),
                     onPressed: () {
                       setState(() {
-                        model.quantity--;
-                        if (model.quantity <= 0) {
+                        //model.quantity--;
+                        if (model.quantity-- > 0) {
                           setState(() {
-                            model.quantity = 0;
+                            productService.updateCartItem(model);
+                            //model.quantity = 0;
                           });
                         }
                       });
@@ -121,6 +127,8 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                     onPressed: () {
                       setState(() {
                         model.quantity++;
+                        productService.updateCartItem(model);
+                        //model.quantity++;
                       });
                     },
                   ),
