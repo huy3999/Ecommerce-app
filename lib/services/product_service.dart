@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -19,6 +20,37 @@ class ProductService {
       products = l.map((i) => ProductModel.fromJson(i)).toList();
       //print(products);
       //print(products[0].name);
+      return products;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<CategoryModel>> getAllCategory() async {
+    final url = '$_baseUrl/categories/';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<CategoryModel> categories = new List<CategoryModel>();
+      Iterable l = json.decode(response.body);
+      categories = l.map((i) => CategoryModel.fromJson(i)).toList();
+      //print(products);
+      //print(products[0].name);
+      return categories;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<ProductModel>> getProductsByCategory(String id) async {
+    final url = '$_baseUrl/products?id_category=$id&&limit=7';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<ProductModel> products = new List<ProductModel>();
+      Iterable l = json.decode(response.body);
+      //print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'+response.body);
+      products = l.map((i) => ProductModel.fromJson(i)).toList();
+      //print('products----------------------------------------------');
+      //print('xxx'+products[0].name);
       return products;
     } else {
       throw Exception('Unable to fetch products from the REST API');

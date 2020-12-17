@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doan_cnpm/tools/app_data.dart';
-import 'package:doan_cnpm/tools/app_methods.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
-import 'package:doan_cnpm/tools/firebase_methods.dart';
 
 class SignUp extends StatefulWidget {
   @override

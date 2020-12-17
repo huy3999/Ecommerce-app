@@ -401,6 +401,7 @@ Future<List<ProductModel>> getListDataLocally({String key}) async {
   //   return null;
   // }
   String map = await getStringDataLocally(key: key);
+  if(map == null) return null;
   print(map);
   List<ProductModel> products = ProductModel.decodeProducts(map);
   print(products);

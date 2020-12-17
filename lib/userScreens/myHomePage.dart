@@ -22,7 +22,6 @@ import 'history.dart';
 import 'profile.dart';
 import 'delivery.dart';
 import 'aboutUs.dart';
-import 'login.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 
@@ -98,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 radius: 8.0,
                 backgroundColor: Colors.red,
                 child: new Text(
-                  "0",
+                  "2",
                   style: new TextStyle(color: Colors.white, fontSize: 12.0),
                 ),
               )
@@ -255,12 +254,11 @@ Widget _showProductList(ProductsBloc productsBloc) {
             children: <Widget>[
               new Flexible(
                   child: new GridView.builder(
-                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemCount: products.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return new GestureDetector(
-                    onTap: () {
+                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                      itemCount: products.length,
+                      itemBuilder: (BuildContext context, int index) {
+                    return new GestureDetector(
+                      onTap: () {
                       /* Navigator.of(context).push(new MaterialPageRoute(
                       builder: (context) => new ItemDetails(
                             itemImage: storeItems[index].itemImage,
@@ -278,13 +276,13 @@ Widget _showProductList(ProductsBloc productsBloc) {
                                 itemDescription: products[index].description,
                               )));
                     },
-                    child: new Card(
+                      child: new Card(
                       // child: Column(
 
                       //   children: [
-                      child: Stack(
-                        alignment: FractionalOffset.topLeft,
-                        children: <Widget>[
+                        child: Stack(
+                          alignment: FractionalOffset.topLeft,
+                          children: <Widget>[
                           new Stack(
                             alignment: FractionalOffset.bottomCenter,
                             children: <Widget>[
