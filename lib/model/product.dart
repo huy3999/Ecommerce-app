@@ -5,7 +5,7 @@ import 'dart:convert';
 // String productModelToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
-  ProductModel( 
+  ProductModel(
       {this.id,
       this.name,
       this.price,
@@ -37,6 +37,22 @@ class ProductModel {
       create_at: json["create_at"],
       isChecked: false);
 
+  factory ProductModel.cartFromJson(Map<String, dynamic> json) {
+    List<String> image = new List<String>();
+    image.add(json["image"]);
+    print('id: ${json["id"]}, img: -${image}-');
+    return ProductModel(
+        id: json["id"],
+        name: json["name"],
+        price: json["price"],
+        quantity: json["quantity"],
+        id_category: json["id_category"],
+        image: image,
+        description: json["description"],
+        create_at: json["create_at"],
+        isChecked: false);
+  }
+
   static Map<String, dynamic> toJson(ProductModel productModel) => {
         //"id"        : id,
         "name": productModel.name,
@@ -48,6 +64,19 @@ class ProductModel {
         "create_at": productModel.create_at,
         "isChecked": productModel.isChecked
       };
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "name": name,
+      "price": price,
+      "quantity": quantity,
+      "id_category": id_category,
+      "image": image,
+      "description": description,
+      "create_at": create_at,
+      "isChecked": isChecked
+    };
+  }
 
   static String encodeProducts(List<ProductModel> products) => json.encode(
         products

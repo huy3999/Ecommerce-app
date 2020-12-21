@@ -233,6 +233,7 @@ class _PageAdminState extends State<PageAdmin> {
                       onTap: (){
                         Navigator.of(context).push(new CupertinoPageRoute(
                             builder: (context) => new ItemDetail(
+                              itemId: snapshot.data[index].id,
                               itemImage: snapshot.data[index].image,
                               itemName: snapshot.data[index].name,
                               itemPrice: snapshot.data[index].price,
@@ -244,9 +245,9 @@ class _PageAdminState extends State<PageAdmin> {
                         child: Stack(
                           alignment: FractionalOffset.topLeft,
                           children: <Widget>[
-                            snapshot.data[index].image[0] == null
-                                ? Center(child: CircularProgressIndicator())
-                                :
+                            // snapshot.data[index].image[0] == null
+                            //     ? Center(child: CircularProgressIndicator())
+                            //     :
                             new Stack(
                               alignment: FractionalOffset.bottomCenter,
                               children: <Widget>[

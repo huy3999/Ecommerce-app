@@ -4,6 +4,7 @@ import 'package:doan_cnpm/model/login_response.dart';
 import 'package:doan_cnpm/model/user.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
+import 'package:doan_cnpm/model/db_helper.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:doan_cnpm/model/product.dart';
 import 'package:doan_cnpm/preferences/user_preferences.dart';
@@ -21,7 +22,6 @@ class ProductService {
       Iterable l = json.decode(response.body);
       products = l.map((i) => ProductModel.fromJson(i)).toList();
       //print(products);
-      //print(products[0].name);
       return products;
     } else {
       throw Exception('Unable to fetch products from the REST API');
@@ -89,15 +89,43 @@ class ProductService {
   }
 
   Future<bool> addToCart(ProductModel product) async {
-    List<ProductModel> cartList = await getListDataLocally(key: 'cartList');
-    if (cartList == null) cartList = new List<ProductModel>();
-    cartList.add(product);
-    print(cartList[0]);
-    var map = ProductModel.encodeProducts(cartList);
-    //print("add to cart"+map);
-    writeDataLocally(key: 'cartList', value: map);
-    return true;
+    final dbHelper = DatabaseHelper.instance;
+    final id = await dbHelper.insert(product);
+    print('inserted cart item id: $id');
   }
+
+  Future<List<ProductModel>> getCartList() async {
+    List<ProductModel> cartList = new List<ProductModel>();
+    final dbHelper = DatabaseHelper.instance;
+    final allRows = await dbHelper.queryAllRows();
+    //allRows.forEach((row) => print(row));
+    allRows.forEach((row) => cartList.add(ProductModel.cartFromJson(row)));
+    //print('get all cart items');
+    //print(allRows);
+    print('count: ');
+    return cartList;
+  }
+  Future<bool> updateCartItem(ProductModel product) async {
+    final dbHelper = DatabaseHelper.instance;
+    final id = await dbHelper.update(product);
+    print('updated cart item id: $id');
+  }
+  Future<bool> deleteCartItem(ProductModel product) async {
+    final dbHelper = DatabaseHelper.instance;
+    final id = await dbHelper.delete(product.id);
+    print('deleted cart item id: $id');
+  }
+
+  // Future<bool> addToCart(ProductModel product) async {
+  //   List<ProductModel> cartList = await getListDataLocally(key: 'cartList');
+  //   if (cartList == null) cartList = new List<ProductModel>();
+  //   cartList.add(product);
+  //   print(cartList[0]);
+  //   var map = ProductModel.encodeProducts(cartList);
+  //   print("add to cart"+map);
+  //   writeDataLocally(key: 'cartList', value: map);
+  //   return true;
+  // }
 
   // List<ProductModel> parseProducts(String responseBody) {
   //   //  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
