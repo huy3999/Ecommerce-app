@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:doan_cnpm/model/category.dart';
+import 'package:doan_cnpm/model/login_response.dart';
+import 'package:doan_cnpm/model/user.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:doan_cnpm/model/db_helper.dart';
@@ -47,14 +49,43 @@ class ProductService {
     if (response.statusCode == 200) {
       List<ProductModel> products = new List<ProductModel>();
       Iterable l = json.decode(response.body);
-      //print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'+response.body);
       products = l.map((i) => ProductModel.fromJson(i)).toList();
       //print('products----------------------------------------------');
-      //print('xxx'+products[0].name);
       return products;
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
+  }
+
+  Future<List<ProductModel>> getAllProductsByCategory(String id) async {
+    final url = '$_baseUrl/products?id_category=$id';
+    final response = await http.get(url);
+    print('products---------------------------------------'+url);
+    if (response.statusCode == 200) {
+      List<ProductModel> products = new List<ProductModel>();
+      Iterable l = json.decode(response.body);
+      products = l.map((i) => ProductModel.fromJson(i)).toList();
+      return products;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<LoginResponse> getUserLogin(String username, String password) async {
+    final http.Response response = await http.post(
+        'https://dacnpm-test.herokuapp.com/login',
+        body: {
+          "username": username,
+          "password": password
+        });
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return LoginResponse.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed');
+    }
+
   }
 
   Future<bool> addToCart(ProductModel product) async {

@@ -22,7 +22,10 @@ class ProductsBloc {
     final products = await _productsService.getProductsByCategory(id);
     _productsController.sink.add(products);
   }
-
+  void loadAllProductsByCategory(String id) async {
+    final products = await _productsService.getAllProductsByCategory(id);
+    _productsController.sink.add(products);
+  }
 
   void addProductToCart(ProductModel product) async {
     final products = await _productsService.addToCart(product);

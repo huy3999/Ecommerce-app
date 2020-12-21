@@ -3,6 +3,9 @@ import 'package:doan_cnpm/loginScreen/components/already_have_an_account_acheck.
 import 'package:doan_cnpm/loginScreen/components/rounded_button.dart';
 import 'package:doan_cnpm/loginScreen/components/rounded_input_field.dart';
 import 'package:doan_cnpm/loginScreen/components/rounded_password_field.dart';
+import 'package:doan_cnpm/model/login_response.dart';
+import 'package:doan_cnpm/services/product_service.dart';
+import 'package:doan_cnpm/userScreens/pageAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -10,9 +13,12 @@ import 'background.dart';
 
 
 class Body extends StatelessWidget {
-  const Body({
+  Body({
     Key key,
   }) : super(key: key);
+  ProductService productService = new ProductService();
+  String username;
+  String password;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +40,31 @@ class Body extends StatelessWidget {
             SizedBox(height: size.height * 0.03),
             RoundedInputField(
               hintText: "Your Email",
-              onChanged: (value) {},
+              onChanged: (value) {
+                username = value;
+              },
             ),
             RoundedPasswordField(
-              //onChanged: (value) {},
+              onChanged: (value) {
+                password = value;
+              },
             ),
             RoundedButton(
               text: "LOGIN",
-              press: () {},
+              press: () {
+               productService.getUserLogin(username, password).then((value){
+                 LoginResponse login = value;
+               print(login.accessToken);
+               if(login.accessToken != null){
+                 Navigator.push(context, MaterialPageRoute(
+                   builder: (context){
+                     return PageAdmin();
+                   }
+                 ));
+               }
+               });
+
+              },
             ),
             SizedBox(height: size.height * 0.03),
             AlreadyHaveAnAccountCheck(
