@@ -4,6 +4,7 @@ import 'package:doan_cnpm/bloc/provider.dart';
 import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/model/product.dart';
 import 'package:doan_cnpm/services/product_service.dart';
+import 'package:doan_cnpm/userScreens/loadMore.dart';
 import 'package:doan_cnpm/userScreens/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -229,6 +230,15 @@ class _PageAdminState extends State<PageAdmin> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
                     return new GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(new CupertinoPageRoute(
+                            builder: (context) => new ItemDetail(
+                              itemImage: snapshot.data[index].image,
+                              itemName: snapshot.data[index].name,
+                              itemPrice: snapshot.data[index].price,
+                              itemDescription: snapshot.data[index].description,
+                            )));
+                      },
                       //children: <Widget>[
                       child: new Card(
                         child: Stack(
@@ -241,6 +251,7 @@ class _PageAdminState extends State<PageAdmin> {
                               alignment: FractionalOffset.bottomCenter,
                               children: <Widget>[
                                 new Container(
+                                  width: 200,height: 321,
                                         decoration: new BoxDecoration(
                                             image: new DecorationImage(
                                                 fit: BoxFit.fitWidth,
@@ -249,6 +260,7 @@ class _PageAdminState extends State<PageAdmin> {
                                       ),
                                 new Container(
                                   height: 55.0,
+                                  width: 200,
                                   color: Colors.black,
                                   child: new Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -352,11 +364,11 @@ class _PageAdminState extends State<PageAdmin> {
                 children: <Widget>[
                   new Flexible(
                       child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return new GestureDetector(
-                        child: Stack(
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext context, int index) {
+                        return new GestureDetector(
+                         child: Stack(
                             alignment: FractionalOffset.topLeft,
                             children: <Widget>[
                               new Container(
@@ -368,15 +380,23 @@ class _PageAdminState extends State<PageAdmin> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Text(
-                                        "${snapshot.data[index].name}",
-                                        overflow: TextOverflow.fade,
-                                        maxLines: 1,
-                                        softWrap: false,
-                                        style: new TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16.0,
-                                            color: Colors.white),
+                                      new GestureDetector(
+                                        onTap: (){
+                                          Navigator.of(context).push(new CupertinoPageRoute(
+                                              builder: (context) =>new LoadMorePage(
+                                                id: snapshot.data[index].Id,
+                                              )));
+                                        },
+                                        child: Text(
+                                          "${snapshot.data[index].name}",
+                                          overflow: TextOverflow.fade,
+                                          maxLines: 1,
+                                          softWrap: false,
+                                          style: new TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 25.0,
+                                              color: Colors.white),
+                                        ),
                                       ),
                                       //Sub ListView
                                        _showItemData(snapshot.data[index].Id),
