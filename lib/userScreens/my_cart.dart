@@ -1,6 +1,8 @@
 import 'package:doan_cnpm/model/db_helper.dart';
 import 'package:doan_cnpm/model/product.dart';
 import 'package:doan_cnpm/services/product_service.dart';
+import 'package:doan_cnpm/userScreens/checkout.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/tools/app_theme.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +42,7 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                           alignment: AlignmentDirectional.centerStart,
                           color: Colors.red,
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                            padding: EdgeInsets.fromLTRB(320.0, 0.0, 0.0, 0.0),
                             child: Icon(
                               Icons.delete,
                               color: Colors.white,
@@ -53,14 +55,9 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                       // Provide a function that tells the app
                       // what to do after an item has been swiped away.
                       onDismissed: (direction) {
-                        // Remove the item from the data source.
-                        //setState(() {
-                        //cartList.removeAt(index);
-                        snapshot.data.removeAt(index);
                         productService.deleteCartItem(cartList[index]);
                         print('deleted index $index');
                         //});
-                        // Show a snackbar. This snackbar could also contain "Undo" actions.
                         Scaffold.of(context).showSnackBar(SnackBar(
                             content:
                                 Text("Đã xóa ${snapshot.data[index].name}")));
@@ -136,16 +133,8 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                                           cartList[index].quantity--;
                                           if (cartList[index].quantity >= 0) {
                                             setState(() {
-                                              // ProductModel productModel = new ProductModel();
-                                              // productModel.id = model.id;
-                                              // productModel.create_at = model.create_at;
-                                              // productModel.description = model.description;
-                                              // productModel.id_category = model.id_category;
-                                              // productModel.image =
-                                              // productModel.quantity = model.quantity
                                               productService.updateCartItem(
                                                   cartList[index]);
-                                              //model.quantity = 0;
                                             });
                                           } else
                                             cartList[index].quantity = 0;
@@ -194,7 +183,6 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     cartFuture = productService.getCartList();
     super.initState();
   }
@@ -234,7 +222,23 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
 
   Widget _submitButton(BuildContext context) {
     return FlatButton(
-        onPressed: () {},
+        onPressed: () {
+          List<ProductModel> checkoutList = new List();
+          productService.getCartList().then((value) {
+            List<ProductModel> itemList = value;
+            for (ProductModel item in itemList) {
+              if (item.quantity > 0) {
+                checkoutList.add(item);
+              }
+            }
+            if(checkoutList.isNotEmpty){
+               Navigator.of(context).push(new CupertinoPageRoute(
+                            builder: (context) => new CheckoutPage(
+                              itemList: checkoutList,
+                            )));
+            }
+          });
+        },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         color: Colors.orange,
         child: Container(

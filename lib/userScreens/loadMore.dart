@@ -156,6 +156,7 @@ class _LoadMorePageState extends State<LoadMorePage> {
                             Navigator.of(context).push(new CupertinoPageRoute(
                                 builder: (context) =>
                                 new ItemDetail(
+                                  itemId: snapshot.data[index].id,
                                   itemImage: snapshot.data[index].image,
                                   itemName: snapshot.data[index].name,
                                   itemPrice: snapshot.data[index].price,

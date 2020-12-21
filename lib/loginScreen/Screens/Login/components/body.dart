@@ -5,12 +5,12 @@ import 'package:doan_cnpm/loginScreen/components/rounded_input_field.dart';
 import 'package:doan_cnpm/loginScreen/components/rounded_password_field.dart';
 import 'package:doan_cnpm/model/login_response.dart';
 import 'package:doan_cnpm/services/product_service.dart';
+import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:doan_cnpm/userScreens/pageAdmin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'background.dart';
-
 
 class Body extends StatelessWidget {
   Body({
@@ -52,18 +52,17 @@ class Body extends StatelessWidget {
             RoundedButton(
               text: "LOGIN",
               press: () {
-               productService.getUserLogin(username, password).then((value){
-                 LoginResponse login = value;
-               print(login.accessToken);
-               if(login.accessToken != null){
-                 Navigator.push(context, MaterialPageRoute(
-                   builder: (context){
-                     return PageAdmin();
-                   }
-                 ));
-               }
-               });
-
+                productService.getUserLogin(username, password).then((value) {
+                  LoginResponse login = value;
+                  print(login.accessToken);
+                  if (login.accessToken != null) {
+                    writeDataLocally(key: "user", value: login.accessToken);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return PageAdmin();
+                    }));
+                  }
+                });
               },
             ),
             SizedBox(height: size.height * 0.03),
