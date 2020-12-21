@@ -234,13 +234,15 @@ class _PageAdminState extends State<PageAdmin> {
                         child: Stack(
                           alignment: FractionalOffset.topLeft,
                           children: <Widget>[
-                            snapshot.data[index].image[0] == null
-                                ? Center(child: CircularProgressIndicator())
-                                :
+                            // snapshot.data[index].image[0] == null
+                            //     ? Center(child: CircularProgressIndicator())
+                            //     :
                             new Stack(
                               alignment: FractionalOffset.bottomCenter,
                               children: <Widget>[
                                 new Container(
+                                  height: 321,
+                                  width: 200,
                                         decoration: new BoxDecoration(
                                             image: new DecorationImage(
                                                 fit: BoxFit.fitWidth,
@@ -249,7 +251,8 @@ class _PageAdminState extends State<PageAdmin> {
                                       ),
                                 new Container(
                                   height: 55.0,
-                                  color: Colors.black,
+                                  width: 200.0,
+                                  color: Colors.black.withAlpha(100),
                                   child: new Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: new Column(

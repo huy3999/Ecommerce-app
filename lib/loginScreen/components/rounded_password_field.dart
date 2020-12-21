@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
+class RoundedPasswordField extends StatefulWidget {
+  @override
+  RoundedPasswordFieldState createState() => RoundedPasswordFieldState();
+}
 
-class RoundedPasswordField extends StatelessWidget {
+class RoundedPasswordFieldState extends State<RoundedPasswordField> {
   final ValueChanged<String> onChanged;
-  const RoundedPasswordField({
+  RoundedPasswordFieldState({
     Key key,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,9 @@ class RoundedPasswordField extends StatelessWidget {
             color: kPrimaryColor,
           ),
           suffixIcon: GestureDetector(
+            onTap: () {
+              setState(() {});
+            },
             child: Icon(
               Icons.visibility,
               color: kPrimaryColor,
@@ -34,6 +41,5 @@ class RoundedPasswordField extends StatelessWidget {
         ),
       ),
     );
-
   }
 }
