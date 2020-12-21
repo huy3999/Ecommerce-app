@@ -6,7 +6,8 @@ import '../constants.dart';
 
 class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
-  const RoundedPasswordField({
+  bool hide = true;
+  RoundedPasswordField({
     Key key,
     this.onChanged,
   }) : super(key: key);
@@ -15,7 +16,7 @@ class RoundedPasswordField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
-        obscureText: false,
+        obscureText: hide,
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         decoration: InputDecoration(
@@ -24,13 +25,7 @@ class RoundedPasswordField extends StatelessWidget {
             Icons.lock,
             color: kPrimaryColor,
           ),
-          suffixIcon: GestureDetector(
-            child: Icon(
-              Icons.visibility,
-              color: kPrimaryColor,
-            ),
-          ),
-          border: InputBorder.none,
+         // border: InputBorder.none,
         ),
       ),
     );
