@@ -20,7 +20,7 @@ import 'my_cart.dart';
 import 'notifications.dart';
 import 'history.dart';
 import 'profile.dart';
-import 'delivery.dart';
+import 'orders.dart';
 import 'aboutUs.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).push(new CupertinoPageRoute(
                     builder: (BuildContext context) =>
                         new GirliesFavorities()));
+                Navigator.of(context).pop();
               }),
           new Stack(
             alignment: Alignment.topLeft,
@@ -192,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
               title: new Text("Delivery Address"),
               onTap: () {
                 Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new GirliesDelivery()));
+                    builder: (BuildContext context) => new OrderPage()));
               },
             ),
             new Divider(),
@@ -254,11 +255,12 @@ Widget _showProductList(ProductsBloc productsBloc) {
             children: <Widget>[
               new Flexible(
                   child: new GridView.builder(
-                      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                      itemCount: products.length,
-                      itemBuilder: (BuildContext context, int index) {
-                    return new GestureDetector(
-                      onTap: () {
+                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+                itemCount: products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return new GestureDetector(
+                    onTap: () {
                       /* Navigator.of(context).push(new MaterialPageRoute(
                       builder: (context) => new ItemDetails(
                             itemImage: storeItems[index].itemImage,
@@ -277,13 +279,13 @@ Widget _showProductList(ProductsBloc productsBloc) {
                                 itemDescription: products[index].description,
                               )));
                     },
-                      child: new Card(
+                    child: new Card(
                       // child: Column(
 
                       //   children: [
-                        child: Stack(
-                          alignment: FractionalOffset.topLeft,
-                          children: <Widget>[
+                      child: Stack(
+                        alignment: FractionalOffset.topLeft,
+                        children: <Widget>[
                           new Stack(
                             alignment: FractionalOffset.bottomCenter,
                             children: <Widget>[
@@ -318,19 +320,20 @@ Widget _showProductList(ProductsBloc productsBloc) {
                                       // ],),
                                       Row(
                                         children: [
-                                          products[index].price!=null ?
-                                            Text(
-                                            "${oCcy.format(products[index].price)}đ" ?? 'Liên hệ',
-                                            style: new TextStyle(
-                                                color: Colors.red[500],
-                                                fontWeight: FontWeight.w700),
-                                          )
-                                            : Text(
-                                            'Liên hệ',
-                                            style: new TextStyle(
-                                                color: Colors.red[500],
-                                                fontWeight: FontWeight.w700))
-
+                                          products[index].price != null
+                                              ? Text(
+                                                  "${oCcy.format(products[index].price)}đ" ??
+                                                      'Liên hệ',
+                                                  style: new TextStyle(
+                                                      color: Colors.red[500],
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                )
+                                              : Text('Liên hệ',
+                                                  style: new TextStyle(
+                                                      color: Colors.red[500],
+                                                      fontWeight:
+                                                          FontWeight.w700))
                                         ],
                                       )
                                     ],

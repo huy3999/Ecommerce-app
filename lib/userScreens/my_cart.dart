@@ -24,7 +24,8 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: FutureBuilder<List<ProductModel>>(
-          future: cartFuture, // a previously-obtained Future<String> or null
+          future: productService
+              .getCartList(), // a previously-obtained Future<String> or null
           builder: (BuildContext context,
               AsyncSnapshot<List<ProductModel>> snapshot) {
             if (snapshot.hasData) {
@@ -183,7 +184,7 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
 
   @override
   void initState() {
-    cartFuture = productService.getCartList();
+    //cartFuture = productService.getCartList();
     super.initState();
   }
 
@@ -231,11 +232,13 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                 checkoutList.add(item);
               }
             }
-            if(checkoutList.isNotEmpty){
-               Navigator.of(context).push(new CupertinoPageRoute(
-                            builder: (context) => new CheckoutPage(
-                              itemList: checkoutList,
-                            )));
+            if (checkoutList.isNotEmpty) {
+              Navigator.of(context)
+                  .push(new CupertinoPageRoute<String>(
+                      builder: (context) => new CheckoutPage(
+                            itemList: checkoutList,
+                          )))
+                   .then((value) => setState(() => {}));
             }
           });
         },

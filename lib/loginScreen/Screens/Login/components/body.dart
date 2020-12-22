@@ -7,6 +7,7 @@ import 'package:doan_cnpm/model/login_response.dart';
 import 'package:doan_cnpm/services/product_service.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:doan_cnpm/userScreens/pageAdmin.dart';
+import 'package:doan_cnpm/userScreens/shipping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -57,10 +58,21 @@ class Body extends StatelessWidget {
                   print(login.accessToken);
                   if (login.accessToken != null) {
                     writeDataLocally(key: "user", value: login.accessToken);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return PageAdmin();
-                    }));
+                    getStringDataLocally(key: "user").then((value) {
+                      productService.getUserInfo(value).then((xvalue) {
+                        if (xvalue.role == 'Shipping') {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return ShippingPage();
+                          }));
+                        } else {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return PageAdmin();
+                          }));
+                        }
+                      });
+                    });
                   }
                 });
               },

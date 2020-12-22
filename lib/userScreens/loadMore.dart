@@ -21,7 +21,7 @@ import 'my_cart.dart';
 import 'notifications.dart';
 import 'history.dart';
 import 'profile.dart';
-import 'delivery.dart';
+import 'orders.dart';
 import 'aboutUs.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';

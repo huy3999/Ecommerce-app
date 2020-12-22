@@ -1,7 +1,11 @@
 import 'dart:convert';
 import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/model/login_response.dart';
+import 'package:doan_cnpm/model/order.dart';
+import 'package:doan_cnpm/model/shipping_model.dart';
 import 'package:doan_cnpm/model/user.dart';
+import 'package:doan_cnpm/model/user_info.dart';
+import 'package:doan_cnpm/model/user_order.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:doan_cnpm/model/db_helper.dart';
@@ -60,7 +64,7 @@ class ProductService {
   Future<List<ProductModel>> getAllProductsByCategory(String id) async {
     final url = '$_baseUrl/products?id_category=$id';
     final response = await http.get(url);
-    print('products---------------------------------------'+url);
+    print('products---------------------------------------' + url);
     if (response.statusCode == 200) {
       List<ProductModel> products = new List<ProductModel>();
       Iterable l = json.decode(response.body);
@@ -71,13 +75,39 @@ class ProductService {
     }
   }
 
+  Future<List<UserOrders>> getAllOrders() async {
+    String token = await getStringDataLocally(key: "user");
+    UserInfo userInfo = await getUserInfo(token);
+    final http.Response response = await http
+        .post('$_baseUrl/orders/orderUser', body: {"id_user": userInfo.sId});
+    if (response.statusCode == 200) {
+      List<UserOrders> orders = new List<UserOrders>();
+      Iterable l = json.decode(response.body);
+      orders = l.map((i) => UserOrders.fromJson(i)).toList();
+      print(response.body);
+      return orders;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+  Future<List<Shipping>> getAllShippingOrders() async {
+    final url = '$_baseUrl/orders/state/shipping';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<Shipping> orders = new List<Shipping>();
+      Iterable l = json.decode(response.body);
+      orders = l.map((i) => Shipping.fromJson(i)).toList();
+      print(response.body);
+      return orders;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
   Future<LoginResponse> getUserLogin(String username, String password) async {
     final http.Response response = await http.post(
         'https://dacnpm-test.herokuapp.com/login',
-        body: {
-          "username": username,
-          "password": password
-        });
+        body: {"username": username, "password": password});
 
     if (response.statusCode == 200) {
       print(response.body);
@@ -85,7 +115,31 @@ class ProductService {
     } else {
       throw Exception('Failed');
     }
+  }
 
+  Future<bool> submitOrder(Order order) async {
+    print("body: " + order.toJson().toString());
+    final http.Response response = await http.post('$_baseUrl/orders',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(order.toJson()));
+
+    if (response.statusCode == 200) {
+      print("res order: " + response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<UserInfo> getUserInfo(String token) async {
+    final response = await http.get(
+      '$_baseUrl/me',
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+    );
+    final responseJson = jsonDecode(response.body);
+    return UserInfo.fromJson(responseJson);
   }
 
   Future<bool> addToCart(ProductModel product) async {
@@ -105,11 +159,13 @@ class ProductService {
     print('count: ');
     return cartList;
   }
+
   Future<bool> updateCartItem(ProductModel product) async {
     final dbHelper = DatabaseHelper.instance;
     final id = await dbHelper.update(product);
     print('updated cart item id: $id');
   }
+
   Future<bool> deleteCartItem(ProductModel product) async {
     final dbHelper = DatabaseHelper.instance;
     final id = await dbHelper.delete(product.id);

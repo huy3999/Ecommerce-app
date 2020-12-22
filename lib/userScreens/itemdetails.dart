@@ -214,56 +214,6 @@ class _ItemDetailState extends State<ItemDetail> {
                           height: 10.0,
                         ),
                         new Text(
-                          "Colors",
-                          style: new TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w700),
-                        ),
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-                        new SizedBox(
-                          height: 50.0,
-                          child: new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: new ChoiceChip(
-                                      label: new Text("Color ${index}"),
-                                      selected: false),
-                                );
-                              }),
-                        ),
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-                        new Text(
-                          "Sizes",
-                          style: new TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w700),
-                        ),
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-                        new SizedBox(
-                          height: 50.0,
-                          child: new ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: new ChoiceChip(
-                                      label: new Text("Size ${index}"),
-                                      selected: false),
-                                );
-                              }),
-                        ),
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-                        new Text(
                           "Quantity",
                           style: new TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.w700),
@@ -324,14 +274,14 @@ class _ItemDetailState extends State<ItemDetail> {
             },
             child: new Icon(Icons.shopping_cart),
           ),
-          new CircleAvatar(
-            radius: 10.0,
-            backgroundColor: Colors.red,
-            child: new Text(
-              "8",
-              style: new TextStyle(color: Colors.white, fontSize: 12.0),
-            ),
-          )
+          // new CircleAvatar(
+          //   radius: 10.0,
+          //   backgroundColor: Colors.red,
+          //   child: new Text(
+          //     "8",
+          //     style: new TextStyle(color: Colors.white, fontSize: 12.0),
+          //   ),
+          // )
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -362,13 +312,13 @@ class _ItemDetailState extends State<ItemDetail> {
                       name: widget.itemName,
                       price: widget.itemPrice,
                       image: widget.itemImage,
-                      quantity: 1,
+                      quantity: number,
                       isChecked: false));
                 },
                 child: new Container(
                   width: (screenSize.width - 20) / 2,
                   child: new Text(
-                    "ORDER NOW",
+                    "ADD TO CART",
                     textAlign: TextAlign.center,
                     style: new TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w700),

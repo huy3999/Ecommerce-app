@@ -1,17 +1,20 @@
 import 'package:doan_cnpm/bloc/category_bloc.dart';
 import 'package:doan_cnpm/bloc/product_bloc.dart';
 import 'package:doan_cnpm/bloc/provider.dart';
+import 'package:doan_cnpm/loginScreen/Screens/Welcome/welcome_screen.dart';
 import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/model/product.dart';
 import 'package:doan_cnpm/services/product_service.dart';
+import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:doan_cnpm/userScreens/loadMore.dart';
 import 'package:doan_cnpm/userScreens/profile.dart';
+import 'package:doan_cnpm/userScreens/shipping.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'aboutUs.dart';
-import 'delivery.dart';
+import 'orders.dart';
 import 'favorites.dart';
 import 'history.dart';
 import 'itemdetails.dart';
@@ -32,7 +35,7 @@ class _PageAdminState extends State<PageAdmin> {
   bool isLoggedIn;
   ProductService productService = new ProductService();
   final oCcy = new NumberFormat("#,##0", "en_US");
-
+final _scaffoldKey = GlobalKey<ScaffoldState>(); 
   // AppMethods appMethods = new FirebaseMethods();
 
   @override
@@ -61,6 +64,7 @@ class _PageAdminState extends State<PageAdmin> {
           child: new Text("E-commerce"),
         ),
         centerTitle: true,
+        key: _scaffoldKey,
         actions: <Widget>[
           new IconButton(
               icon: new Icon(
@@ -85,14 +89,14 @@ class _PageAdminState extends State<PageAdmin> {
                         builder: (BuildContext context) =>
                             new GirliesMessages()));
                   }),
-              new CircleAvatar(
-                radius: 8.0,
-                backgroundColor: Colors.red,
-                child: new Text(
-                  "0",
-                  style: new TextStyle(color: Colors.white, fontSize: 12.0),
-                ),
-              )
+              // new CircleAvatar(
+              //   radius: 8.0,
+              //   backgroundColor: Colors.red,
+              //   child: new Text(
+              //     "0",
+              //     style: new TextStyle(color: Colors.white, fontSize: 12.0),
+              //   ),
+              // )
             ],
           )
         ],
@@ -147,10 +151,12 @@ class _PageAdminState extends State<PageAdmin> {
                   size: 20.0,
                 ),
               ),
-              title: new Text("Order History"),
+              title: new Text("Orders"),
               onTap: () {
                 Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new GirliesHistory()));
+                    builder: (BuildContext context) => new OrderPage()));
+                // Navigator.of(context).push(new CupertinoPageRoute(
+                //     builder: (BuildContext context) => new OrderPage()));
               },
             ),
             new Divider(),
@@ -179,7 +185,8 @@ class _PageAdminState extends State<PageAdmin> {
               title: new Text("Delivery Address"),
               onTap: () {
                 Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new GirliesDelivery()));
+                    builder: (BuildContext context) =>
+                        new GirliesFavorities()));
               },
             ),
             new Divider(),
@@ -199,14 +206,24 @@ class _PageAdminState extends State<PageAdmin> {
               //
             ),
             new ListTile(
-              trailing: new CircleAvatar(
-                child: new Icon(
-                  Icons.exit_to_app,
-                  color: Colors.white,
-                  size: 20.0,
+              trailing: GestureDetector(
+                onTap: () {
+                  // _scaffoldKey.currentState.showSnackBar(
+                  //     SnackBar(content: Text("Logging out...")));
+                  clearDataLocally();
+                  Navigator.of(context).pushReplacement(new CupertinoPageRoute(
+                    builder: (BuildContext context) =>
+                        new WelcomeScreen()));
+                },
+                child: new CircleAvatar(
+                  child: new Icon(
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                    size: 20.0,
+                  ),
                 ),
               ),
-              title: new Text(isLoggedIn == true ? "Logout" : "Login"),
+              title: new Text("Logout"),
               //onTap: checkIfLoggedIn,
             ),
           ],
@@ -230,15 +247,16 @@ class _PageAdminState extends State<PageAdmin> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
                     return new GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.of(context).push(new CupertinoPageRoute(
                             builder: (context) => new ItemDetail(
-                              itemId: snapshot.data[index].id,
-                              itemImage: snapshot.data[index].image,
-                              itemName: snapshot.data[index].name,
-                              itemPrice: snapshot.data[index].price,
-                              itemDescription: snapshot.data[index].description,
-                            )));
+                                  itemId: snapshot.data[index].id,
+                                  itemImage: snapshot.data[index].image,
+                                  itemName: snapshot.data[index].name,
+                                  itemPrice: snapshot.data[index].price,
+                                  itemDescription:
+                                      snapshot.data[index].description,
+                                )));
                       },
                       //children: <Widget>[
                       child: new Card(
@@ -252,13 +270,14 @@ class _PageAdminState extends State<PageAdmin> {
                               alignment: FractionalOffset.bottomCenter,
                               children: <Widget>[
                                 new Container(
-                                  width: 200,height: 321,
-                                        decoration: new BoxDecoration(
-                                            image: new DecorationImage(
-                                                fit: BoxFit.fitWidth,
-                                                image: new NetworkImage(snapshot
-                                                    .data[index].image[0]))),
-                                      ),
+                                  width: 200,
+                                  height: 321,
+                                  decoration: new BoxDecoration(
+                                      image: new DecorationImage(
+                                          fit: BoxFit.fitWidth,
+                                          image: new NetworkImage(
+                                              snapshot.data[index].image[0]))),
+                                ),
                                 new Container(
                                   height: 55.0,
                                   width: 200,
@@ -365,11 +384,11 @@ class _PageAdminState extends State<PageAdmin> {
                 children: <Widget>[
                   new Flexible(
                       child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                        return new GestureDetector(
-                         child: Stack(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return new GestureDetector(
+                        child: Stack(
                             alignment: FractionalOffset.topLeft,
                             children: <Widget>[
                               new Container(
@@ -382,11 +401,14 @@ class _PageAdminState extends State<PageAdmin> {
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       new GestureDetector(
-                                        onTap: (){
-                                          Navigator.of(context).push(new CupertinoPageRoute(
-                                              builder: (context) =>new LoadMorePage(
-                                                id: snapshot.data[index].Id,
-                                              )));
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              new CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      new LoadMorePage(
+                                                        id: snapshot
+                                                            .data[index].Id,
+                                                      )));
                                         },
                                         child: Text(
                                           "${snapshot.data[index].name}",
@@ -400,7 +422,7 @@ class _PageAdminState extends State<PageAdmin> {
                                         ),
                                       ),
                                       //Sub ListView
-                                       _showItemData(snapshot.data[index].Id),
+                                      _showItemData(snapshot.data[index].Id),
                                     ],
                                   ),
                                 ),
