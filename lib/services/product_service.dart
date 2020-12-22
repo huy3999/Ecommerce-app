@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/model/login_response.dart';
+import 'package:doan_cnpm/model/sign_up.dart';
 import 'package:doan_cnpm/model/user.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
@@ -73,7 +74,7 @@ class ProductService {
 
   Future<LoginResponse> getUserLogin(String username, String password) async {
     final http.Response response = await http.post(
-        'https://dacnpm-test.herokuapp.com/login',
+        '$_baseUrl/login',
         body: {
           "username": username,
           "password": password
@@ -86,6 +87,24 @@ class ProductService {
       throw Exception('Failed');
     }
 
+  }
+  Future<bool> SignUpUser(SignUpModel signUpModel) async {
+    final http.Response response = await http.post(
+        '$_baseUrl/register',
+        headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+        body:
+          json.encode(signUpModel.toJson())
+        );
+    if (response.statusCode == 200) {
+
+      print(""+response.body);
+      return true;
+    } else {
+      return false;
+      //throw Exception('Failed');
+    }
   }
 
   Future<bool> addToCart(ProductModel product) async {
