@@ -13,15 +13,28 @@ class _AboutUsState extends State<AboutUs> {
         title: new Text("About Us"),
         centerTitle: false,
       ),
-      body: new Center(
-          child: Row(
-            children: [
-              Image.asset('assets/images/anh1.png', width: 200, height: 100,),
-              Image.asset('assets/images/anh2.png', width: 50, height: 50,),
-
-            ],
-          ),
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Image.asset('assets/images/anh1.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh2.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh3.jpg'),
+            ),
+            Expanded(
+                child: Image.asset('assets/images/anh4.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh5.jpg'),
+            ),
+          ],
         ),
+      ),
 
     );
   }

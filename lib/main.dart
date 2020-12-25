@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
         child: MaterialApp(
-      title: 'ECA',
+      title: 'E-commerce',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
         primaryColor: kPrimaryColor,
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         future: getStringDataLocally(key: "user"),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
-            return WelcomeScreen();
+            return HomePage();
           } else {
             return FutureBuilder(
                 future: productService.getUserInfo(snapshot.data),

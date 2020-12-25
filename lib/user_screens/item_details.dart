@@ -307,6 +307,13 @@ class _ItemDetailState extends State<ItemDetail> {
               GestureDetector(
                 onTap: () {
                   if (number > 0 && widget.itemPrice != null) {
+                     productsBloc.addProductToCart(new ProductModel(
+                        id: widget.itemId,
+                        name: widget.itemName,
+                        price: widget.itemPrice,
+                        image: widget.itemImage,
+                        quantity: number,
+                        isChecked: false));
                     List<ProductModel> checkoutList = new List();
                     checkoutList.add(new ProductModel(
                         id: widget.itemId,
