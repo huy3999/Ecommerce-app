@@ -5,6 +5,7 @@ import 'package:doan_cnpm/model/order.dart';
 import 'package:doan_cnpm/model/shipping_model.dart';
 import 'package:doan_cnpm/model/user_info.dart';
 import 'package:doan_cnpm/model/user_order.dart';
+import 'package:doan_cnpm/model/sign_up.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:doan_cnpm/model/db_helper.dart';
@@ -87,6 +88,7 @@ class ProductService {
       throw Exception('Unable to fetch products from the REST API');
     }
   }
+
   Future<List<Shipping>> getAllShippingOrders() async {
     final url = '$_baseUrl/orders/state/shipping';
     final response = await http.get(url);
@@ -102,15 +104,15 @@ class ProductService {
   }
 
   Future<LoginResponse> getUserLogin(String username, String password) async {
-    final http.Response response = await http.post(
-        'https://dacnpm-test.herokuapp.com/login',
+    final http.Response response = await http.post('$_baseUrl/login',
         body: {"username": username, "password": password});
 
     if (response.statusCode == 200) {
       print(response.body);
       return LoginResponse.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed');
+      return new LoginResponse();
+      //throw Exception('Failed');
     }
   }
 
@@ -137,6 +139,21 @@ class ProductService {
     );
     final responseJson = jsonDecode(response.body);
     return UserInfo.fromJson(responseJson);
+  }
+
+  Future<bool> SignUpUser(SignUpModel signUpModel) async {
+    final http.Response response = await http.post('$_baseUrl/register',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(signUpModel.toJson()));
+    if (response.statusCode == 200) {
+      print("" + response.body);
+      return true;
+    } else {
+      return false;
+      //throw Exception('Failed');
+    }
   }
 
   Future<bool> addToCart(ProductModel product) async {
