@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:doan_cnpm/model/product.dart';
 import 'package:flutter/material.dart';
-import 'package:doan_cnpm/tools/progressdialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Widget appTextField(
@@ -363,13 +362,13 @@ showSnackBar(String message, final scaffoldKey) {
   ));
 }
 
-displayProgressDialog(BuildContext context) {
-  Navigator.of(context).push(new PageRouteBuilder(
-      opaque: false,
-      pageBuilder: (BuildContext context, _, __) {
-        return new ProgressDialog();
-      }));
-}
+// displayProgressDialog(BuildContext context) {
+//   Navigator.of(context).push(new PageRouteBuilder(
+//       opaque: false,
+//       pageBuilder: (BuildContext context, _, __) {
+//         return new ProgressDialog();
+//       }));
+// }
 
 closeProgressDialog(BuildContext context) {
   Navigator.of(context).pop();
@@ -408,7 +407,7 @@ Future<List<ProductModel>> getListDataLocally({String key}) async {
   return products;
 }
 
-getStringDataLocally({String key}) async {
+Future<String> getStringDataLocally({String key}) async {
   Future<SharedPreferences> saveLocal = SharedPreferences.getInstance();
   final SharedPreferences localData = await saveLocal;
   return localData.getString(key);

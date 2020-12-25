@@ -1,10 +1,15 @@
 import 'dart:convert';
+import 'package:doan_cnpm/model/category.dart';
+import 'package:doan_cnpm/model/login_response.dart';
+import 'package:doan_cnpm/model/order.dart';
+import 'package:doan_cnpm/model/shipping_model.dart';
+import 'package:doan_cnpm/model/user_info.dart';
+import 'package:doan_cnpm/model/user_order.dart';
+import 'package:doan_cnpm/model/sign_up.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:doan_cnpm/model/db_helper.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:doan_cnpm/model/product.dart';
-import 'package:doan_cnpm/preferences/user_preferences.dart';
 import 'dart:io';
 
 class ProductService {
@@ -25,6 +30,156 @@ class ProductService {
     }
   }
 
+  Future<List<CategoryModel>> getAllCategory() async {
+    final url = '$_baseUrl/categories/';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<CategoryModel> categories = new List<CategoryModel>();
+      Iterable l = json.decode(response.body);
+      categories = l.map((i) => CategoryModel.fromJson(i)).toList();
+      //print(products);
+      //print(products[0].name);
+      return categories;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<ProductModel>> getProductsByCategory(String id) async {
+    final url = '$_baseUrl/products?id_category=$id&&limit=7';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<ProductModel> products = new List<ProductModel>();
+      Iterable l = json.decode(response.body);
+      products = l.map((i) => ProductModel.fromJson(i)).toList();
+      //print('products----------------------------------------------');
+      return products;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<ProductModel>> getAllProductsByCategory(String id) async {
+    final url = '$_baseUrl/products?id_category=$id';
+    final response = await http.get(url);
+    print('products---------------------------------------' + url);
+    if (response.statusCode == 200) {
+      List<ProductModel> products = new List<ProductModel>();
+      Iterable l = json.decode(response.body);
+      products = l.map((i) => ProductModel.fromJson(i)).toList();
+      return products;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<UserOrders>> getAllOrders() async {
+    String token = await getStringDataLocally(key: "user");
+    UserInfo userInfo = await getUserInfo(token);
+    final http.Response response = await http
+        .post('$_baseUrl/orders/orderUser', body: {"id_user": userInfo.sId});
+    if (response.statusCode == 200) {
+      List<UserOrders> orders = new List<UserOrders>();
+      Iterable l = json.decode(response.body);
+      orders = l.map((i) => UserOrders.fromJson(i)).toList();
+      print(response.body);
+      return orders;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<List<Shipping>> getAllShippingOrders(String shipperId) async {
+    final url = '$_baseUrl/orders/state/shipping/$shipperId';
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<Shipping> orders = new List<Shipping>();
+      Iterable l = json.decode(response.body);
+      orders = l.map((i) => Shipping.fromJson(i)).toList();
+      //print(response.body);
+      return orders;
+    } else {
+      throw Exception('Unable to fetch products from the REST API');
+    }
+  }
+
+  Future<bool> takeOrder(String order_id, String user_id) async {
+    print('order_id: $order_id  user_id: $user_id');
+    final http.Response response = await http
+        .put('$_baseUrl/orders/state/takeOrder/$order_id', body: {"user_id": user_id});
+
+    if (response.statusCode == 200) {
+      print('take order true');
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+ Future<bool> completeOrder(String order_id) async {
+    final http.Response response = await http
+        .put('$_baseUrl/orders/state/done/$order_id');
+
+    if (response.statusCode == 200) {
+      print('complete order true');
+      return true;
+    } else {
+      return false;
+    }
+  }
+  Future<LoginResponse> getUserLogin(String username, String password) async {
+    final http.Response response = await http.post('$_baseUrl/login',
+        body: {"username": username, "password": password});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return LoginResponse.fromJson(json.decode(response.body));
+    } else {
+      return new LoginResponse();
+      //throw Exception('Failed');
+    }
+  }
+
+  Future<bool> submitOrder(Order order) async {
+    print("body: " + order.toJson().toString());
+    final http.Response response = await http.post('$_baseUrl/orders',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(order.toJson()));
+
+    if (response.statusCode == 200) {
+      print("res order: " + response.body);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<UserInfo> getUserInfo(String token) async {
+    final response = await http.get(
+      '$_baseUrl/me',
+      headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+    );
+    final responseJson = jsonDecode(response.body);
+    return UserInfo.fromJson(responseJson);
+  }
+
+  Future<bool> SignUpUser(SignUpModel signUpModel) async {
+    final http.Response response = await http.post('$_baseUrl/register',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(signUpModel.toJson()));
+    if (response.statusCode == 200) {
+      print("" + response.body);
+      return true;
+    } else {
+      return false;
+      //throw Exception('Failed');
+    }
+  }
+
   Future<bool> addToCart(ProductModel product) async {
     final dbHelper = DatabaseHelper.instance;
     final id = await dbHelper.insert(product);
@@ -42,10 +197,17 @@ class ProductService {
     print('count: ');
     return cartList;
   }
+
   Future<bool> updateCartItem(ProductModel product) async {
     final dbHelper = DatabaseHelper.instance;
     final id = await dbHelper.update(product);
     print('updated cart item id: $id');
+  }
+
+  Future<bool> deleteCartItem(ProductModel product) async {
+    final dbHelper = DatabaseHelper.instance;
+    final id = await dbHelper.delete(product.id);
+    print('deleted cart item id: $id');
   }
 
   // Future<bool> addToCart(ProductModel product) async {

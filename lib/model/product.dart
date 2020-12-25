@@ -36,19 +36,7 @@ class ProductModel {
       description: json["description"],
       create_at: json["create_at"],
       isChecked: false);
-// factory ProductModel.fromJson(Map<String, dynamic> json) {
-//     print('img: ${json["image"]}');
-//     return ProductModel(
-//         id: json["_id"],
-//         name: json["name"],
-//         price: json["price"],
-//         quantity: json["quantity"],
-//         id_category: json["id_category"],
-//         image: json["image"].cast<String>(),
-//         description: json["description"],
-//         create_at: json["create_at"],
-//         isChecked: false);
-//   }
+
   factory ProductModel.cartFromJson(Map<String, dynamic> json) {
     List<String> image = new List<String>();
     image.add(json["image"]);

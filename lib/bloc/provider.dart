@@ -1,3 +1,4 @@
+import 'package:doan_cnpm/bloc/category_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_cnpm/bloc/product_bloc.dart';
 export 'package:doan_cnpm/bloc/product_bloc.dart';
@@ -5,6 +6,7 @@ export 'package:doan_cnpm/bloc/product_bloc.dart';
 class Provider extends InheritedWidget {
   //final _loginBloc = new LoginBloc();
   final _productsBloc = new ProductsBloc();
+  final _categoriesBloc = new CategoriesBloc();
   static Provider _instance;
 
   @override
@@ -29,6 +31,10 @@ class Provider extends InheritedWidget {
   static ProductsBloc productsBloc(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<Provider>()._productsBloc;
   }
+  static CategoriesBloc categoriesBloc(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._categoriesBloc;
+  }
+
   // static Provider of(BuildContext context) {
   //   return context.dependOnInheritedWidgetOfExactType<Provider>();
   // }

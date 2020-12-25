@@ -88,13 +88,17 @@ class DatabaseHelper {
     Database db = await instance.database;
     String id = product.toMap()['id'];
     print('update id: ${id}');
-    return await db.update(table, product.toMap(),
-        where: '$columnId = ?', whereArgs: [id]);
+        return await db.update(table, {
+      'id': product.id,
+      'name': product.name,
+      'price': product.price,
+      'quantity': product.quantity,
+      'image': product.image[0],
+      'checked': product.isChecked ? 1 : 0,}, where: '$columnId = ?', whereArgs: [id]);
   }
-
   // Deletes the row specified by the id. The number of affected rows is
   // returned. This should be 1 as long as the row exists.
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     Database db = await instance.database;
     return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
   }
