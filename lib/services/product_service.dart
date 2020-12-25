@@ -89,20 +89,44 @@ class ProductService {
     }
   }
 
-  Future<List<Shipping>> getAllShippingOrders() async {
-    final url = '$_baseUrl/orders/state/shipping';
+  Future<List<Shipping>> getAllShippingOrders(String shipperId) async {
+    final url = '$_baseUrl/orders/state/shipping/$shipperId';
     final response = await http.get(url);
     if (response.statusCode == 200) {
       List<Shipping> orders = new List<Shipping>();
       Iterable l = json.decode(response.body);
       orders = l.map((i) => Shipping.fromJson(i)).toList();
-      print(response.body);
+      //print(response.body);
       return orders;
     } else {
       throw Exception('Unable to fetch products from the REST API');
     }
   }
 
+  Future<bool> takeOrder(String order_id, String user_id) async {
+    print('order_id: $order_id  user_id: $user_id');
+    final http.Response response = await http
+        .put('$_baseUrl/orders/state/takeOrder/$order_id', body: {"user_id": user_id});
+
+    if (response.statusCode == 200) {
+      print('take order true');
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+ Future<bool> completeOrder(String order_id) async {
+    final http.Response response = await http
+        .put('$_baseUrl/orders/state/done/$order_id');
+
+    if (response.statusCode == 200) {
+      print('complete order true');
+      return true;
+    } else {
+      return false;
+    }
+  }
   Future<LoginResponse> getUserLogin(String username, String password) async {
     final http.Response response = await http.post('$_baseUrl/login',
         body: {"username": username, "password": password});

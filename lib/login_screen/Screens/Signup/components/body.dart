@@ -60,7 +60,7 @@ class Body extends StatelessWidget {
                   if (value) {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                          return HomePage();
+                          return LoginScreen();
                         }));
                   }else
                     {

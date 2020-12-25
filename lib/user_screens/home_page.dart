@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   Future<UserInfo> getCurrentUser() async {
     String token = await getStringDataLocally(key: 'user');
     UserInfo userInfo = await productService.getUserInfo(token);
-      print("user info ----------------" + userInfo.username);
+    print("user info ----------------" + userInfo.username);
     return userInfo;
   }
 
@@ -82,8 +82,16 @@ class _HomePageState extends State<HomePage> {
                       child: new Icon(Icons.person),
                     ),
                   );
-                } else
-                  return Container(width: 0, height: 0);
+                } else {
+                  return UserAccountsDrawerHeader(
+                    accountName: new Text("Guest user"),
+                    accountEmail: new Text(""),
+                    currentAccountPicture: new CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: new Icon(Icons.person),
+                    ),
+                  );
+                }
               },
             ),
             new ListTile(
@@ -114,24 +122,48 @@ class _HomePageState extends State<HomePage> {
                     builder: (BuildContext context) => new AboutUs()));
               },
             ),
-            new ListTile(
-              trailing: GestureDetector(
-                onTap: () {
-                  clearDataLocally();
-                  Navigator.of(context).pushReplacement(new CupertinoPageRoute(
-                      builder: (BuildContext context) => new WelcomeScreen()));
-                },
-                child: new CircleAvatar(
-                  child: new Icon(
-                    Icons.exit_to_app,
-                    color: Colors.white,
-                    size: 20.0,
-                  ),
-                ),
-              ),
-              title: new Text("Logout"),
-              //onTap: checkIfLoggedIn,
-            ),
+            FutureBuilder(
+                future: getStringDataLocally(key: "user"),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.data != null) {
+                    return ListTile(
+                        trailing: GestureDetector(
+                          onTap: () {
+                            clearDataLocally();
+                            Navigator.of(context).pushReplacement(
+                                new CupertinoPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new WelcomeScreen()));
+                          },
+                          child: new CircleAvatar(
+                            child: new Icon(
+                              Icons.exit_to_app,
+                              color: Colors.white,
+                              size: 20.0,
+                            ),
+                          ),
+                        ),
+                        title: new Text("Logout"));
+                  } else {
+                    return ListTile(
+                        trailing: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(
+                                new CupertinoPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new WelcomeScreen()));
+                          },
+                          child: new CircleAvatar(
+                            child: new Icon(
+                              Icons.login,
+                              color: Colors.white,
+                              size: 20.0,
+                            ),
+                          ),
+                        ),
+                        title: new Text("Login"));
+                  }
+                }),
           ],
         ),
       ),
