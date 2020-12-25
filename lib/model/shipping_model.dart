@@ -5,6 +5,8 @@ class Shipping {
   String customerPhone;
   String idUser;
   String createAt;
+  String idShipper;
+  String idOrder;
 
   Shipping(
       {this.status,
@@ -12,7 +14,9 @@ class Shipping {
       this.totalPrice,
       this.customerPhone,
       this.idUser,
-      this.createAt});
+      this.createAt,
+      this.idShipper,
+      this.idOrder});
 
   Shipping.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -21,6 +25,8 @@ class Shipping {
     customerPhone = json['customer_phone'];
     idUser = json['id_user'];
     createAt = json['create_at'];
+    idShipper = json['id_shipper'];
+    idOrder = json['id_order'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +37,8 @@ class Shipping {
     data['customer_phone'] = this.customerPhone;
     data['id_user'] = this.idUser;
     data['create_at'] = this.createAt;
+    data['id_shipper'] = this.idShipper;
+    data['id_order'] = this.idOrder;
     return data;
   }
 }

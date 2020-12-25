@@ -16,20 +16,135 @@ class ShippingPage extends StatefulWidget {
 
 class _ShippingPage extends State<ShippingPage> {
   final oCcy = new NumberFormat("#,##0", "en_US");
-  final dbHelper = DatabaseHelper.instance;
+  String user_id;
   ProductService productService = new ProductService();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<Shipping> data;
+  Widget buttons(int index) {
+    if (data[index].status == 'Shipping') {
+      return FlatButton(
+          onPressed: () {
+            var alert = AlertDialog(
+              title: Text("Take this order"),
+              content: Text("Do you want to take this order?"),
+              actions: [
+                FlatButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    productService
+                        .takeOrder(data[index].idOrder, user_id)
+                        .then((value) {
+                      setState(() {
+                        data[index].status = 'isTaken';
+                      });
+                      Navigator.of(context).pop();
+                     _scaffoldKey.currentState.showSnackBar(
+                          new SnackBar(content: Text('Order taken')));
+                    });
+                  },
+                )
+              ],
+            );
+
+            showDialog(
+              context: context,
+              builder: (context) {
+                return alert;
+              },
+            );
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          color: Colors.orange,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            width: AppTheme.fullWidth(context) * .2,
+            child: Text(
+              'Take order',
+              style: new TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ));
+    } else if (data[index].status == 'isTaken') {
+      return FlatButton(
+          onPressed: () {
+            var alert = AlertDialog(
+              title: Text("Complete delivery"),
+              content: Text("Do you want to complete this order?"),
+              actions: [
+                FlatButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    productService
+                        .completeOrder(data[index].idOrder)
+                        .then((value) {
+                      setState(() {
+                        data[index].status = 'Success';
+                      });
+                      Navigator.of(context).pop();
+                      _scaffoldKey.currentState.showSnackBar(
+                          new SnackBar(content: Text('Completed')));
+                    });
+                  },
+                )
+              ],
+            );
+
+            showDialog(
+              context: context,
+              builder: (context) {
+                return alert;
+              },
+            );
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          color: Colors.green,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            width: AppTheme.fullWidth(context) * .15,
+            child: Text(
+              'Complete',
+              style: new TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ));
+    } else {
+      return FlatButton(
+          onPressed: () {
+          },
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          color: Colors.blue.shade300,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(vertical: 12),
+            width: AppTheme.fullWidth(context) * .15,
+            child: Text(
+              'Success',
+              style: new TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ));
+    }
+  }
+
   Widget _cartItems() {
+    print("user_id: " + user_id);
     return Padding(
       padding: const EdgeInsets.only(bottom: 5),
       child: FutureBuilder<List<Shipping>>(
-          future: productService
-              .getAllShippingOrders(), // a previously-obtained Future<String> or null
+          future: productService.getAllShippingOrders(
+              user_id), // a previously-obtained Future<String> or null
           builder:
               (BuildContext context, AsyncSnapshot<List<Shipping>> snapshot) {
             if (snapshot.hasData) {
+              data = snapshot.data;
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: snapshot.data.length,
+                itemCount: data.length,
                 itemBuilder: (context, index) {
                   return Card(
                     child: Padding(
@@ -45,7 +160,7 @@ class _ShippingPage extends State<ShippingPage> {
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  Text("${snapshot.data[index].status}",
+                                  Text("${data[index].status}",
                                       style: new TextStyle(
                                           color: Colors.blue[500],
                                           fontWeight: FontWeight.w700)),
@@ -56,7 +171,7 @@ class _ShippingPage extends State<ShippingPage> {
                                   children: [
                                     Text("Customer phone: "),
                                     Text(
-                                        "${snapshot.data[index].customerPhone}",
+                                        "${data[index].customerPhone}",
                                         style: new TextStyle(
                                             color: Colors.blue[500],
                                             fontWeight: FontWeight.w700))
@@ -70,63 +185,26 @@ class _ShippingPage extends State<ShippingPage> {
                                     width: 10,
                                   ),
                                   Text(
-                                      "${oCcy.format(snapshot.data[index].totalPrice)}đ",
+                                      "${oCcy.format(data[index].totalPrice)}đ",
                                       style: new TextStyle(
                                           color: Colors.red[500],
                                           fontWeight: FontWeight.w700)),
                                 ],
                               ),
-                              Text("${DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(snapshot.data[index].createAt))}",
-                                    style: new TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w400)),
+                              Text(
+                                  "${DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(data[index].createAt))}",
+                                  style: new TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400)),
+                              buttons(index)
                             ],
                           ),
-                          SizedBox(width: 40,),
-                          FlatButton(
-                              onPressed: () {
-                                var alert = AlertDialog(
-                                  title: Text("Complete delivery"),
-                                  content: Text(
-                                      "Do you want to complete this order"),
-                                  actions: [
-                                    FlatButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        //_handleSubmission;
-                                      },
-                                    )
-                                  ],
-                                );
-
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return alert;
-                                  },
-                                );
-                              },
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              color: Colors.orange,
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                width: AppTheme.fullWidth(context) * .15,
-                                child: Text(
-                                  'Complete',
-                                  style: new TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ))
                         ],
                       ),
                     ),
                   );
                 },
               );
-              //return Column(children: cartList.map((x) => _item(x)).toList());
             } else {
               print('no item');
               return Center(
@@ -139,7 +217,11 @@ class _ShippingPage extends State<ShippingPage> {
 
   @override
   void initState() {
-    //cartFuture = productService.getCartList();
+    getStringDataLocally(key: 'user_id').then((value) {
+      setState(() {
+        user_id = value;
+      });
+    });
     super.initState();
   }
 
@@ -149,7 +231,8 @@ class _ShippingPage extends State<ShippingPage> {
       appBar: new AppBar(
         leading: Container(),
         title: new Text("Shipping orders"),
-        centerTitle: false,
+        centerTitle: true,
+        key: _scaffoldKey,
         actions: [
           new IconButton(
               icon: new Icon(
@@ -158,9 +241,8 @@ class _ShippingPage extends State<ShippingPage> {
               ),
               onPressed: () {
                 clearDataLocally();
-                  Navigator.of(context).pushReplacement(new CupertinoPageRoute(
-                    builder: (BuildContext context) =>
-                        new WelcomeScreen()));
+                Navigator.of(context).pushReplacement(new CupertinoPageRoute(
+                    builder: (BuildContext context) => new WelcomeScreen()));
               }),
         ],
       ),

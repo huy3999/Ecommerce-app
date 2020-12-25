@@ -60,6 +60,7 @@ class Body extends StatelessWidget {
                     writeDataLocally(key: "user", value: login.accessToken);
                     getStringDataLocally(key: "user").then((value) {
                       productService.getUserInfo(value).then((xvalue) {
+                        writeDataLocally(key: 'user_id',value: xvalue.sId);
                         if (xvalue.role == 'Shipping') {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
