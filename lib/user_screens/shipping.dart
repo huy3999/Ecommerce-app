@@ -82,7 +82,7 @@ class _ShippingPage extends State<ShippingPage> {
                                         fontWeight: FontWeight.w400)),
                             ],
                           ),
-                          SizedBox(width: 40,),
+                          SizedBox(width: 10,),
                           FlatButton(
                               onPressed: () {
                                 var alert = AlertDialog(
@@ -116,6 +116,7 @@ class _ShippingPage extends State<ShippingPage> {
                                 child: Text(
                                   'Complete',
                                   style: new TextStyle(
+                                    fontSize: 12,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500),
                                 ),

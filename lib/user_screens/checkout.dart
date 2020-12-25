@@ -175,7 +175,7 @@ class _CheckoutPage extends State<CheckoutPage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.symmetric(vertical: 12),
-                  width: AppTheme.fullWidth(context) * .3,
+                  width: AppTheme.fullWidth(context) * .5,
                   child: Text(
                     'Add phone number',
                     style: new TextStyle(

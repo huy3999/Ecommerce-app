@@ -14,11 +14,15 @@ class _AboutUsState extends State<AboutUs> {
         centerTitle: false,
       ),
       body: new Center(
-        child: new Text(
-          "About Girlies",
-          style: new TextStyle(fontSize: 25.0),
+          child: Row(
+            children: [
+              Image.asset('assets/images/anh1.png', width: 200, height: 100,),
+              Image.asset('assets/images/anh2.png', width: 50, height: 50,),
+
+            ],
+          ),
         ),
-      ),
+
     );
   }
 }
