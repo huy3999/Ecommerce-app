@@ -1,3 +1,4 @@
+import 'package:doan_cnpm/login_screen/Screens/Welcome/welcome_screen.dart';
 import 'package:doan_cnpm/model/db_helper.dart';
 import 'package:doan_cnpm/model/order.dart';
 import 'package:doan_cnpm/model/product.dart';
@@ -315,37 +316,44 @@ class _CheckoutPage extends State<CheckoutPage> {
             UserInfo userInfo;
             getStringDataLocally(key: "user").then((value) {
               token = value;
-              print("token: " + token);
-              productService.getUserInfo(token).then((value) {
-                userInfo = value;
-                print("uid: " + userInfo.sId);
-                List<Items> items = new List();
-                for (var item in widget.itemList) {
-                  items.add(
-                      new Items(idProduct: item.id, quantity: item.quantity));
-                }
-                Order order = new Order(
-                    customerPhone: phoneNumber.toString(),
-                    idUser: userInfo.sId,
-                    items: items,
-                    totalPrice: getPrice(widget.itemList));
-                productService.submitOrder(order).then((value) {
-                  if (value) {
-                    for (var item in widget.itemList) {
-                      productService.deleteCartItem(item);
-                    }
-                    Navigator.of(context).pushReplacement(
-                        new CupertinoPageRoute(
-                            builder: (BuildContext context) =>
-                                new OrderPage()));
-                  } else {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text("Order fail, please try again")));
+              if (token != null) {
+                print("token: " + token);
+                productService.getUserInfo(token).then((value) {
+                  userInfo = value;
+                  print("uid: " + userInfo.sId);
+                  List<Items> items = new List();
+                  for (var item in widget.itemList) {
+                    items.add(
+                        new Items(idProduct: item.id, quantity: item.quantity));
                   }
+                  Order order = new Order(
+                      customerPhone: phoneNumber.toString(),
+                      idUser: userInfo.sId,
+                      items: items,
+                      totalPrice: getPrice(widget.itemList));
+                  productService.submitOrder(order).then((value) {
+                    if (value) {
+                      for (var item in widget.itemList) {
+                        productService.deleteCartItem(item);
+                      }
+                      Navigator.of(context).pushReplacement(
+                          new CupertinoPageRoute(
+                              builder: (BuildContext context) =>
+                                  new OrderPage()));
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text("Order fail, please try again")));
+                    }
+                  });
                 });
-              });
+              }else{
+                Navigator.of(context).pushReplacement(
+                                new CupertinoPageRoute(
+                                    builder: (BuildContext context) =>
+                                        new WelcomeScreen()));
+              }
             });
-          } else{
+          } else {
             _scaffoldKey.currentState.showSnackBar(SnackBar(
                 content: Text("Order fail, please enter phone number")));
           }

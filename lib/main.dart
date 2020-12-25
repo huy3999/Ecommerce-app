@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         future: getStringDataLocally(key: "user"),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
-            return WelcomeScreen();
+            return HomePage();
           } else {
             return FutureBuilder(
                 future: productService.getUserInfo(snapshot.data),
