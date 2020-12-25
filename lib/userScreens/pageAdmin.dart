@@ -133,16 +133,16 @@ final _scaffoldKey = GlobalKey<ScaffoldState>();
                 child: new Icon(Icons.person),
               ),
             ),
-            new ListTile(
-              leading: new CircleAvatar(
-                child: new Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
-              title: new Text("Order Notifications"),
-            ),
+            // new ListTile(
+            //   leading: new CircleAvatar(
+            //     child: new Icon(
+            //       Icons.notifications,
+            //       color: Colors.white,
+            //       size: 20.0,
+            //     ),
+            //   ),
+            //   title: new Text("Order Notifications"),
+            // ),
             new ListTile(
               leading: new CircleAvatar(
                 child: new Icon(
@@ -159,52 +159,52 @@ final _scaffoldKey = GlobalKey<ScaffoldState>();
                 //     builder: (BuildContext context) => new OrderPage()));
               },
             ),
-            new Divider(),
-            new ListTile(
-              leading: new CircleAvatar(
-                child: new Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
-              title: new Text("Profile Settings"),
-              onTap: () {
-                Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new GirliesProfile()));
-              },
-            ),
-            new ListTile(
-              leading: new CircleAvatar(
-                child: new Icon(
-                  Icons.home,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
-              title: new Text("Delivery Address"),
-              onTap: () {
-                Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) =>
-                        new GirliesFavorities()));
-              },
-            ),
-            new Divider(),
-            new ListTile(
-              trailing: new CircleAvatar(
-                child: new Icon(
-                  Icons.help,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
-              title: new Text("About Us"),
-              onTap: () {
-                Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new GirliesAboutUs()));
-              },
-              //
-            ),
+            // new Divider(),
+            // new ListTile(
+            //   leading: new CircleAvatar(
+            //     child: new Icon(
+            //       Icons.person,
+            //       color: Colors.white,
+            //       size: 20.0,
+            //     ),
+            //   ),
+            //   title: new Text("Profile Settings"),
+            //   onTap: () {
+            //     Navigator.of(context).push(new CupertinoPageRoute(
+            //         builder: (BuildContext context) => new GirliesProfile()));
+            //   },
+            // ),
+            // new ListTile(
+            //   leading: new CircleAvatar(
+            //     child: new Icon(
+            //       Icons.home,
+            //       color: Colors.white,
+            //       size: 20.0,
+            //     ),
+            //   ),
+            //   title: new Text("Delivery Address"),
+            //   onTap: () {
+            //     Navigator.of(context).push(new CupertinoPageRoute(
+            //         builder: (BuildContext context) =>
+            //             new GirliesFavorities()));
+            //   },
+            // ),
+            // new Divider(),
+            // new ListTile(
+            //   trailing: new CircleAvatar(
+            //     child: new Icon(
+            //       Icons.help,
+            //       color: Colors.white,
+            //       size: 20.0,
+            //     ),
+            //   ),
+            //   title: new Text("About Us"),
+            //   onTap: () {
+            //     Navigator.of(context).push(new CupertinoPageRoute(
+            //         builder: (BuildContext context) => new GirliesAboutUs()));
+            //   },
+            //   //
+            // ),
             new ListTile(
               trailing: GestureDetector(
                 onTap: () {

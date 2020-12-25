@@ -3,15 +3,12 @@ import 'package:doan_cnpm/model/category.dart';
 import 'package:doan_cnpm/model/login_response.dart';
 import 'package:doan_cnpm/model/order.dart';
 import 'package:doan_cnpm/model/shipping_model.dart';
-import 'package:doan_cnpm/model/user.dart';
 import 'package:doan_cnpm/model/user_info.dart';
 import 'package:doan_cnpm/model/user_order.dart';
 import 'package:doan_cnpm/tools/app_tools.dart';
 import 'package:http/http.dart' as http;
 import 'package:doan_cnpm/model/db_helper.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:doan_cnpm/model/product.dart';
-import 'package:doan_cnpm/preferences/user_preferences.dart';
 import 'dart:io';
 
 class ProductService {

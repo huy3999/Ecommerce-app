@@ -140,7 +140,7 @@ class _LoadMorePageState extends State<LoadMorePage> {
       builder:
           (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();}
+          return Center(child: CircularProgressIndicator());}
         else
           return new Center(
             child: new Column(
