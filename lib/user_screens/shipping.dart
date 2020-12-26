@@ -38,7 +38,7 @@ class _ShippingPage extends State<ShippingPage> {
                         data[index].status = 'isTaken';
                       });
                       Navigator.of(context).pop();
-                     _scaffoldKey.currentState.showSnackBar(
+                      _scaffoldKey.currentState.showSnackBar(
                           new SnackBar(content: Text('Order taken')));
                     });
                   },
@@ -104,7 +104,7 @@ class _ShippingPage extends State<ShippingPage> {
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(vertical: 12),
-            width: AppTheme.fullWidth(context) * .15,
+            width: AppTheme.fullWidth(context) * .2,
             child: Text(
               'Complete',
               style: new TextStyle(
@@ -114,6 +114,7 @@ class _ShippingPage extends State<ShippingPage> {
     } else {
       return FlatButton(
           onPressed: () {
+            setState(() {});
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -170,8 +171,7 @@ class _ShippingPage extends State<ShippingPage> {
                                 Row(
                                   children: [
                                     Text("Customer phone: "),
-                                    Text(
-                                        "${data[index].customerPhone}",
+                                    Text("${data[index].customerPhone}",
                                         style: new TextStyle(
                                             color: Colors.blue[500],
                                             fontWeight: FontWeight.w700))
@@ -227,35 +227,43 @@ class _ShippingPage extends State<ShippingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        leading: Container(),
-        title: new Text("Shipping orders"),
-        centerTitle: true,
-        key: _scaffoldKey,
-        actions: [
-          new IconButton(
-              icon: new Icon(
-                Icons.exit_to_app,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                clearDataLocally();
-                Navigator.of(context).pushReplacement(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new WelcomeScreen()));
-              }),
-        ],
-      ),
-      body: Container(
-        //margin: const EdgeInsets.only(bottom: 150),
-        padding: AppTheme.padding,
-        //child: SingleChildScrollView(
-        //child: Column(
-        //children: <Widget>[
-        child: _cartItems(),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: new Scaffold(
+        appBar: new AppBar(
+          leading: IconButton(icon: new Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ), onPressed: (){setState(() {
+            
+          });}),
+          title: new Text("Shipping orders"),
+          centerTitle: true,
+          key: _scaffoldKey,
+          actions: [
+            new IconButton(
+                icon: new Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  clearDataLocally();
+                  Navigator.of(context).pushReplacement(new CupertinoPageRoute(
+                      builder: (BuildContext context) => new WelcomeScreen()));
+                }),
+          ],
+        ),
+        body: Container(
+          //margin: const EdgeInsets.only(bottom: 150),
+          padding: AppTheme.padding,
+          //child: SingleChildScrollView(
+          //child: Column(
+          //children: <Widget>[
+          child: _cartItems(),
 
-        //],
-        //),
+          //],
+          //),
+        ),
       ),
     );
   }

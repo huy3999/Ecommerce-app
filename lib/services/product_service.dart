@@ -155,6 +155,17 @@ class ProductService {
       return false;
     }
   }
+  Future<bool> cancelOrder(String order_id) async {
+    final http.Response response = await http
+        .put('$_baseUrl/orders/customer/cancelOrder/$order_id');
+
+    if (response.statusCode == 200) {
+      print('cancel order true');
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   Future<UserInfo> getUserInfo(String token) async {
     final response = await http.get(
