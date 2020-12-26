@@ -43,7 +43,7 @@ class _ShoppingCartPage extends State<ShoppingCartPage> {
                           alignment: AlignmentDirectional.centerStart,
                           color: Colors.red,
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(320.0, 0.0, 0.0, 0.0),
+                            padding: EdgeInsets.fromLTRB(280.0, 0.0, 0.0, 0.0),
                             child: Icon(
                               Icons.delete,
                               color: Colors.white,
