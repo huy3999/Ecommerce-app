@@ -13,12 +13,29 @@ class _AboutUsState extends State<AboutUs> {
         title: new Text("About Us"),
         centerTitle: false,
       ),
-      body: new Center(
-        child: new Text(
-          "About Girlies",
-          style: new TextStyle(fontSize: 25.0),
+      body: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: Image.asset('assets/images/anh1.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh2.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh3.jpg'),
+            ),
+            Expanded(
+                child: Image.asset('assets/images/anh4.jpg'),
+            ),
+            Expanded(
+              child: Image.asset('assets/images/anh5.jpg'),
+            ),
+          ],
         ),
       ),
+
     );
   }
 }
