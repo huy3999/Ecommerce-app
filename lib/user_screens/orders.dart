@@ -35,52 +35,112 @@ class _OrderPage extends State<OrderPage> {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Status:"),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("${snapshot.data[index].status}",
-                                    style: new TextStyle(
-                                        color: Colors.blue[500],
-                                        fontWeight: FontWeight.w700)),
-                                        SizedBox(
-                                  width: 10,
-                                ),
-                                Text("${DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(snapshot.data[index].createAt))}",
-                                    style: new TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w400)),
-                              ],
-                            ),
-                            Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: snapshot.data[index].orderItem
-                                    .map((x) => _item(x))
-                                    .toList()),
-                            Row(
-                              children: [
-                                Text("Total:"),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                    "${oCcy.format(snapshot.data[index].totalPrice)}đ",
-                                    style: new TextStyle(
-                                        color: Colors.red[500],
-                                        fontWeight: FontWeight.w700)),
-                              ],
-                            ),
-                          ],
+                    return Stack(children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text("Status:"),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text("${snapshot.data[index].status}",
+                                      style: new TextStyle(
+                                          color: Colors.blue[500],
+                                          fontWeight: FontWeight.w700)),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                      "${DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(snapshot.data[index].createAt))}",
+                                      style: new TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w400)),
+                                ],
+                              ),
+                              Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: snapshot.data[index].orderItem
+                                      .map((x) => _item(x))
+                                      .toList()),
+                              Row(
+                                children: [
+                                  Text("Total:"),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                      "${oCcy.format(snapshot.data[index].totalPrice)}đ",
+                                      style: new TextStyle(
+                                          color: Colors.red[500],
+                                          fontWeight: FontWeight.w700)),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    );
+                      (snapshot.data[index].status == 'Submitted' ||
+                              snapshot.data[index].status == 'Processing')
+                          ? Positioned(
+                              top: 0,
+                              right: 0,
+                              child: FlatButton(
+                                onPressed: () {
+                                  var alert = AlertDialog(
+                                      title: Text("Cancel order"),
+                                      content: Text(
+                                          "Do you want to cancel this order?"),
+                                      actions: [
+                                        FlatButton(
+                                          child: Text("OK"),
+                                          onPressed: () {
+                                            productService
+                                                .cancelOrder(
+                                                    snapshot.data[index].sId)
+                                                .then((value) {
+                                              if (value) {
+                                                setState(() {});
+                                                Navigator.of(context).pop();
+                                                Scaffold.of(context)
+                                                    .showSnackBar(new SnackBar(
+                                                        content: Text(
+                                                            'Cancel completed')));
+                                              }
+                                            });
+                                          },
+                                        )
+                                      ]);
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return alert;
+                                    },
+                                  );
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                color: Colors.red,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.all(3),
+                                  child: Text(
+                                    'Cancel',
+                                    style: new TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              width: 0,
+                              height: 0,
+                            )
+                    ]);
                   },
                 ),
               );
